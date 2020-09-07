@@ -13,21 +13,20 @@ const layout = {
 
 class AddStoreModel extends React.Component<IProps> {
   onSubmit = (values: any) => {
-    console.log('?', values)
+    // console.log('?', values)
     this.props.onShow(false);
   };
 
   render() {
     return (
       <Modal
-        title="创建门店"
+        title="创建门店信息"
         visible={this.props.visible}
-        // onOk={this.handleOk}
-        // onCancel={this.handleCancel}
         footer={null}
         closable={false}
+        destroyOnClose
       >
-        <Form {...layout} name="StoreSearch" onFinish={this.onSubmit}>
+        <Form {...layout} name="storeAddForm" onFinish={this.onSubmit}>
           <Form.Item
             name="storeName"
             label="门店名称"
@@ -60,7 +59,7 @@ class AddStoreModel extends React.Component<IProps> {
             <Input />
           </Form.Item>
           <Form.Item
-            name="password"
+            name="passWord"
             label="管理员 (密码)"
             rules={[
               {
@@ -75,7 +74,7 @@ class AddStoreModel extends React.Component<IProps> {
           <Form.Item
             name="confirm"
             label="确认密码"
-            dependencies={['password']}
+            dependencies={['passWord']}
             hasFeedback
             rules={[
               {
@@ -84,7 +83,7 @@ class AddStoreModel extends React.Component<IProps> {
               },
               ({ getFieldValue }) => ({
                 validator(rule, value) {
-                  if (!value || getFieldValue('password') === value) {
+                  if (!value || getFieldValue('passWord') === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject('两次输入的密码不一致!');

@@ -5,7 +5,7 @@ const { Option } = Select;
 
 class StoreSearch extends React.Component {
   onSearch = (values: any) => {
-    console.log('>>', values);
+    // console.log('>>', values);
   };
 
   render() {

@@ -1,13 +1,16 @@
 import React from 'react';
 import './index.scss';
-import { Table, Tag, Button } from "antd";
+import { Table, Tag, Button, Space, Popconfirm } from "antd";
 import StoreSearch from './Search';
 import { IStoreTable } from '@/pages/types/storeManagement';
-import AddStoreModel from '@/pages/component/storeManagement/addStore';
+import AddStoreModel from '@/pages/component/storeManagement/AddStore';
+import EditStoreModel from '@/pages/component/storeManagement/EditStore';
 
 interface IState {
   dataSource: IStoreTable[];
   createStoreModalStatus: boolean;
+  editStoreModalStatus: boolean;
+  currentEditData: IStoreTable;
 }
 
 class StoreManagement extends React.Component<any, IState> {
@@ -32,7 +35,9 @@ class StoreManagement extends React.Component<any, IState> {
         status: false
       }
     ],
-    createStoreModalStatus: false
+    createStoreModalStatus: false,
+    editStoreModalStatus: false,
+    currentEditData: Object.create(null)
   };
 
   columns = [
@@ -74,11 +79,28 @@ class StoreManagement extends React.Component<any, IState> {
       dataIndex: 'address',
       key: 'address',
       width: '30%'
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (record: any) => (
+        <Space size="middle">
+          <a onClick={() => this.editStoreModalStatusSwitch(true, record)}>修改</a>
+        </Space>
+      )
     }
   ];
+
   createStoreModalStatusSwitch = (createStoreModalStatus: boolean) => {
     this.setState({
       createStoreModalStatus
+    })
+  };
+
+  editStoreModalStatusSwitch = (editStoreModalStatus: boolean, currentEditData?: any) => {
+    this.setState({
+      editStoreModalStatus,
+      currentEditData
     })
   };
 
@@ -93,6 +115,7 @@ class StoreManagement extends React.Component<any, IState> {
           <Table dataSource={this.state.dataSource} columns={this.columns} />
         </div>
         <AddStoreModel visible={this.state.createStoreModalStatus} onShow={this.createStoreModalStatusSwitch}/>
+        <EditStoreModel visible={this.state.editStoreModalStatus} currentEditData={this.state.currentEditData} onEditShow={this.editStoreModalStatusSwitch}/>
       </div>
     )
   }
