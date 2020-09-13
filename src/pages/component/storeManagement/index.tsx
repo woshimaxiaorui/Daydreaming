@@ -1,40 +1,28 @@
 import React from 'react';
 import './index.scss';
-import { Table, Tag, Button, Space, Popconfirm } from "antd";
+import { Table, Tag, Button, Space } from "antd";
 import StoreSearch from './Search';
 import { IStoreTable } from '@/pages/types/storeManagement';
 import AddStoreModel from '@/pages/component/storeManagement/AddStore';
 import EditStoreModel from '@/pages/component/storeManagement/EditStore';
+import { connect } from 'react-redux';
+import { Dispatch } from 'dva';
+import ConnectState from '@/models/connect';
+import { IStoreManagementState } from '@/models/storeManagement';
 
 interface IState {
-  dataSource: IStoreTable[];
   createStoreModalStatus: boolean;
   editStoreModalStatus: boolean;
   currentEditData: IStoreTable;
 }
 
-class StoreManagement extends React.Component<any, IState> {
+interface IProps extends StateProps, ConnectState{
+  storeList: IStoreTable[];
+  dispatch: Dispatch
+}
+
+class StoreManagement extends React.Component<IProps, IState> {
   state = {
-    dataSource: [
-      {
-        key: '1',
-        storeName: '白日梦 (总店)',
-        userName: 'maxiaorui',
-        passWord: '19911206',
-        phoneNumber: '15598476380',
-        address: '北京市昌平区回龙观和谐家园一区十三号楼401',
-        status: true
-      },
-      {
-        key: '2',
-        storeName: '测试门店_1',
-        userName: 'yuweipeng',
-        passWord: '19911206',
-        phoneNumber: '15598476380',
-        address: '北京市昌平区回龙观和谐家园一区十三号楼401',
-        status: false
-      }
-    ],
     createStoreModalStatus: false,
     editStoreModalStatus: false,
     currentEditData: Object.create(null)
@@ -60,7 +48,7 @@ class StoreManagement extends React.Component<any, IState> {
       }
     },
     {
-      title: '管理员 (用户名)',
+      title: '管理员账号 (真实姓名)',
       dataIndex: 'userName',
       key: 'userName'
     },
@@ -81,7 +69,7 @@ class StoreManagement extends React.Component<any, IState> {
       width: '30%'
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'action',
       render: (record: any) => (
         <Space size="middle">
@@ -90,6 +78,11 @@ class StoreManagement extends React.Component<any, IState> {
       )
     }
   ];
+  componentDidMount() {
+    this.props.dispatch({
+      type: 'storeManagement/getStoreManagementListEffect'
+    });
+  }
 
   createStoreModalStatusSwitch = (createStoreModalStatus: boolean) => {
     this.setState({
@@ -112,7 +105,10 @@ class StoreManagement extends React.Component<any, IState> {
           <Button type="primary" onClick={() => this.createStoreModalStatusSwitch(true)}>创建门店</Button>
         </div>
         <div className="store-table">
-          <Table dataSource={this.state.dataSource} columns={this.columns} />
+          <Table
+            dataSource={this.props.storeManagement.storeList}
+            columns={this.columns}
+          />
         </div>
         <AddStoreModel visible={this.state.createStoreModalStatus} onShow={this.createStoreModalStatusSwitch}/>
         <EditStoreModel visible={this.state.editStoreModalStatus} currentEditData={this.state.currentEditData} onEditShow={this.editStoreModalStatusSwitch}/>
@@ -121,4 +117,9 @@ class StoreManagement extends React.Component<any, IState> {
   }
 }
 
-export default StoreManagement;
+const mapStateToProps = (state: ConnectState) => ({
+  storeManagement: state.storeManagement
+});
+type StateProps = ReturnType<typeof mapStateToProps>;
+
+export default connect(mapStateToProps)(StoreManagement);

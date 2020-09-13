@@ -11,7 +11,8 @@
     "antd": "^4.6.2",
     "lodash": "^4.17.20",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "umi-request": "^1.2.19"
   },
   "devDependencies": {
     "@types/jest": "^23.3.12",

@@ -1,6 +1,7 @@
 import React from 'react';
 import './index.scss';
 import { Table, Tag, Button, Space } from "antd";
+import StoreSearch from './Search';
 import { IStoreTable } from '@/pages/types/storeManagement';
 import AddStoreModel from '@/pages/component/storeManagement/AddStore';
 import EditStoreModel from '@/pages/component/storeManagement/EditStore';
@@ -18,7 +19,7 @@ interface IProps {
   dispatch: Dispatch
 }
 
-class PlayerManagement extends React.Component<IProps, IState> {
+class StoreManagement extends React.Component<IProps, IState> {
   state = {
     dataSource: [
       {
@@ -118,7 +119,7 @@ class PlayerManagement extends React.Component<IProps, IState> {
     return (
       <div className="store-management">
         <div className="store-search">
-          <div>人员</div>
+          <StoreSearch/>
           <Button type="primary" onClick={() => this.createStoreModalStatusSwitch(true)}>创建门店</Button>
         </div>
         <div className="store-table">
@@ -131,4 +132,4 @@ class PlayerManagement extends React.Component<IProps, IState> {
   }
 }
 
-export default connect()(PlayerManagement);
+export default connect()(StoreManagement);

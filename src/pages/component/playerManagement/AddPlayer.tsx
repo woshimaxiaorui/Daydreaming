@@ -1,57 +1,19 @@
 import React from 'react';
 import { Modal, Button, Form, Switch, Input } from 'antd';
-import { Dispatch } from 'dva';
-import { connect } from 'react-redux';
-import { FormInstance } from 'antd/es/form';
-import { IAddStoreExists } from '@/pages/types/storeManagement';
-
 
 interface IProps {
   visible: boolean;
-  dispatch: Dispatch;
   onShow(visible: boolean): void;
 }
 
 const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
 };
 
 class AddStoreModel extends React.Component<IProps> {
-
-  formRef = React.createRef<FormInstance>();
-
-  onSubmit = async (values: any) => {
-    const params = {
-      address: values.address,
-      password: values.passWord,
-      phoneNumber: values.phoneNumber,
-      status: values.status,
-      storeName: values.storeName,
-      userName: values.userName,
-      realName: values.realName
-    };
-    const submitRes: IAddStoreExists = await this.props.dispatch({
-      type: 'storeManagement/addStoreManagementEffect',
-      params
-    });
-    if (!submitRes.userNameExists || !submitRes.storeNameExists) {
-      const userNameError = submitRes.userNameExists ? {} : {
-        name: 'userName',
-        errors: ['该用户名称已存在']
-      };
-      const storeNameError = submitRes.storeNameExists ? {} : {
-        name: 'storeName',
-        errors: ['该门店名称已存在']
-      };
-      const errorList = [
-        userNameError,
-        storeNameError
-      ];
-      // @ts-ignore
-      this.formRef.current.setFields(errorList);
-      return;
-    }
+  onSubmit = (values: any) => {
+    // console.log('?', values)
     this.props.onShow(false);
   };
 
@@ -64,7 +26,7 @@ class AddStoreModel extends React.Component<IProps> {
         closable={false}
         destroyOnClose
       >
-        <Form {...layout} name="storeAddForm" ref={this.formRef} onFinish={this.onSubmit}>
+        <Form {...layout} name="storeAddForm" onFinish={this.onSubmit}>
           <Form.Item
             name="storeName"
             label="门店名称"
@@ -80,31 +42,18 @@ class AddStoreModel extends React.Component<IProps> {
           <Form.Item
             name="status"
             label="系统使用状态"
-            initialValue={true}
             rules={[{required: true, message: '不可以为空'}]}
           >
             <Switch defaultChecked/>
           </Form.Item>
           <Form.Item
-            name="realName"
-            label="管理员 (真实姓名)"
-            rules={[
-              {
-                required: true,
-                message: '输入管理员 (真实姓名)!',
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
             name="userName"
-            label="管理员 (账号)"
+            label="管理员 (用户名)"
             rules={[
               {
                 required: true,
                 message: '输入管理员 (用户名)!',
-              }
+              },
             ]}
           >
             <Input />
@@ -177,7 +126,7 @@ class AddStoreModel extends React.Component<IProps> {
               type="primary"
               htmlType="submit"
             >
-              提交
+              查询
             </Button>
             <Button className="cancel" onClick={() => this.props.onShow(false)}>取消</Button>
           </div>
@@ -186,4 +135,4 @@ class AddStoreModel extends React.Component<IProps> {
     )
   }
 }
-export default connect()(AddStoreModel);
+export default AddStoreModel;

@@ -1,46 +1,22 @@
 import React from 'react';
 import { Modal, Button, Form, Switch, Input } from 'antd';
-import { IAddStoreExists, IStoreTable } from '@/pages/types/storeManagement';
+import { IStoreTable } from '@/pages/types/storeManagement';
 import _ from 'lodash';
-import { Dispatch } from 'dva';
-import { connect } from 'react-redux';
-import { FormInstance } from 'antd/es/form';
 
 interface IProps {
   visible: boolean;
   currentEditData: IStoreTable;
-  dispatch: Dispatch;
   onEditShow(visible: boolean): void;
 }
 
 const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
 };
 
 class EditStoreModel extends React.Component<IProps> {
-
-  formRef = React.createRef<FormInstance>();
-
-  onSubmit = async (values: any) => {
-    const params = {
-      storeId: this.props.currentEditData.id,
-      address: values.address,
-      status: values.status,
-      storeName: values.storeName,
-    };
-    const submitRes: IAddStoreExists = await this.props.dispatch({
-      type: 'storeManagement/editStoreManagementEffect',
-      params
-    });
-    if (!submitRes.storeNameExists) {
-      // @ts-ignore
-      this.formRef.current.setFields([{
-        name: 'storeName',
-        errors: ['该门店名称已存在']
-      }]);
-      return;
-    }
+  onSubmit = (values: any) => {
+    // console.log('values=>', values);
     this.props.onEditShow(false);
   };
 
@@ -56,7 +32,7 @@ class EditStoreModel extends React.Component<IProps> {
         closable={false}
         destroyOnClose
       >
-        <Form {...layout} name="storeEditForm" ref={this.formRef} initialValues={initialValues} onFinish={this.onSubmit}>
+        <Form {...layout} name="storeEditForm" initialValues={initialValues} onFinish={this.onSubmit}>
           <Form.Item
             name="storeName"
             label="门店名称"
@@ -75,6 +51,65 @@ class EditStoreModel extends React.Component<IProps> {
             rules={[{required: true, message: '不可以为空'}]}
           >
             <Switch defaultChecked={switchStatus}/>
+          </Form.Item>
+          <Form.Item
+            name="userName"
+            label="管理员 (用户名)"
+            rules={[
+              {
+                required: true,
+                message: '输入管理员 (用户名)!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="passWord"
+            label="管理员 (密码)"
+            rules={[
+              {
+                required: true,
+                message: '输入密码!',
+              },
+            ]}
+            hasFeedback
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            name="confirm"
+            label="确认密码"
+            dependencies={['passWord']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: '请确认密码!',
+              },
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  if (!value || getFieldValue('passWord') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('两次输入的密码不一致!');
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            name="phoneNumber"
+            label="管理员手机号"
+            rules={[
+              {
+                required: true,
+                message: '不可以为空!',
+              }
+            ]}
+          >
+            <Input/>
           </Form.Item>
           <Form.Item
             name="address"
@@ -97,7 +132,7 @@ class EditStoreModel extends React.Component<IProps> {
               type="primary"
               htmlType="submit"
             >
-              提交
+              查询
             </Button>
             <Button className="cancel" onClick={() => this.props.onEditShow(false)}>取消</Button>
           </div>
@@ -106,4 +141,4 @@ class EditStoreModel extends React.Component<IProps> {
     )
   }
 }
-export default connect()(EditStoreModel);
+export default EditStoreModel;

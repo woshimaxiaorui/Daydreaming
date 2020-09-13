@@ -2,12 +2,13 @@ import React from 'react';
 import _ from 'lodash';
 import { Menu } from 'antd';
 import { IMenu } from '@/pages/types/LeftMenuType';
-import { MailOutlined } from '@ant-design/icons';
+import { MailOutlined, AppstoreAddOutlined } from '@ant-design/icons';
 import router from 'umi/router';
 
 interface IState {
   menuList: IMenu[];
 }
+
 class LeftMenu extends React.Component<any, IState> {
   state = {
     menuList: [
@@ -18,6 +19,10 @@ class LeftMenu extends React.Component<any, IState> {
       {
         menuTitle: '玩家管理',
         menuPath: 'playerManagement'
+      },
+      {
+        menuTitle: '剧本管理',
+        menuPath: 'scriptManagement'
       }
     ]
   };
@@ -26,7 +31,6 @@ class LeftMenu extends React.Component<any, IState> {
     // 根据path跳转路由
     router.push(`/${path}`);
   };
-
   render() {
     return (
       <Menu
@@ -40,7 +44,6 @@ class LeftMenu extends React.Component<any, IState> {
             onClick={() => this.menuClick(item.menuPath)}
           >
             <span>
-              <MailOutlined/>
               {item.menuTitle}
             </span>
           </Menu.Item>)
