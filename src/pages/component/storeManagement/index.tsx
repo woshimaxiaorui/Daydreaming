@@ -8,7 +8,6 @@ import EditStoreModel from '@/pages/component/storeManagement/EditStore';
 import { connect } from 'react-redux';
 import { Dispatch } from 'dva';
 import ConnectState from '@/models/connect';
-import { IStoreManagementState } from '@/models/storeManagement';
 
 interface IState {
   createStoreModalStatus: boolean;

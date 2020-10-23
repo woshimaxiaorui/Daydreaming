@@ -1,39 +1,31 @@
 import React from 'react';
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button } from 'antd';
+import { connect } from 'react-redux';
+import { Dispatch } from 'dva';
 
-const { Option } = Select;
+interface IProps {
+  dispatch: Dispatch
+}
 
-class StoreSearch extends React.Component {
+class PlayerSearch extends React.Component<IProps> {
   onSearch = (values: any) => {
-    // console.log('>>', values);
+    console.log('>>', values);
+    this.props.dispatch({
+      type: 'playerManagement/getPlayerManagementListEffect',
+      params: values
+    });
   };
 
   render() {
     return (
-      <Form name="StoreSearch" layout="inline" onFinish={this.onSearch}>
+      <Form name="PlayerSearch" layout="inline" onFinish={this.onSearch}>
         <Form.Item
-          name="status"
-          label="系统使用状态"
+          name="nickname"
         >
-          <Select style={{ width: 100 }} allowClear>
-            <Option value="true">使用中</Option>
-            <Option value="false">未激活</Option>
-          </Select>
+          <Input placeholder="昵称" />
         </Form.Item>
         <Form.Item
-          name="storeName"
-        >
-          <Input placeholder="门店名称" />
-        </Form.Item>
-        <Form.Item
-          name="userName"
-        >
-          <Input
-            placeholder="管理员名"
-          />
-        </Form.Item>
-        <Form.Item
-          name="phoneNumber"
+          name="phone"
         >
           <Input
             placeholder="手机号"
@@ -52,4 +44,4 @@ class StoreSearch extends React.Component {
   }
 }
 
-export default StoreSearch;
+export default connect()(PlayerSearch);

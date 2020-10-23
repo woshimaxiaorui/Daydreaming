@@ -1,134 +1,130 @@
 import React from 'react';
 import './index.scss';
 import { Table, Tag, Button, Space } from "antd";
-import { IStoreTable } from '@/pages/types/storeManagement';
-import AddStoreModel from '@/pages/component/storeManagement/AddStore';
-import EditStoreModel from '@/pages/component/storeManagement/EditStore';
+import { IPlayerTable } from '@/pages/types/playerManagement';
+import AddPlayerModel from '@/pages/component/playerManagement/AddPlayer';
+import EditPlayerModel from '@/pages/component/playerManagement/EditPlayer';
+import StoreSearch from './Search';
 import { connect } from 'react-redux';
 import { Dispatch } from 'dva';
+import ConnectState from '@/models/connect';
 
 interface IState {
-  dataSource: IStoreTable[];
-  createStoreModalStatus: boolean;
-  editStoreModalStatus: boolean;
-  currentEditData: IStoreTable;
+  dataSource: IPlayerTable[];
+  createPlayerModalStatus: boolean;
+  editPlayerModalStatus: boolean;
+  currentEditData: IPlayerTable;
 }
 
-interface IProps {
+interface IProps extends StateProps, ConnectState {
   dispatch: Dispatch
 }
 
 class PlayerManagement extends React.Component<IProps, IState> {
   state = {
-    dataSource: [
-      {
-        key: '1',
-        storeName: '白日梦 (总店)',
-        userName: 'maxiaorui',
-        passWord: '19911206',
-        phoneNumber: '15598476380',
-        address: '北京市昌平区回龙观和谐家园一区十三号楼401',
-        status: true
-      },
-      {
-        key: '2',
-        storeName: '测试门店_1',
-        userName: 'yuweipeng',
-        passWord: '19911206',
-        phoneNumber: '15598476380',
-        address: '北京市昌平区回龙观和谐家园一区十三号楼401',
-        status: false
-      }
-    ],
-    createStoreModalStatus: false,
-    editStoreModalStatus: false,
+    createPlayerModalStatus: false,
+    editPlayerModalStatus: false,
     currentEditData: Object.create(null)
   };
 
   columns = [
     {
-      title: '门店名称',
-      dataIndex: 'storeName',
-      key: 'storeName'
+      title: '昵称',
+      dataIndex: 'nickname',
+      key: 'nickname',
+      width: '15%'
     },
     {
-      title: '系统使用状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: (record: boolean) => {
-        if (record) {
-          return (
-            <Tag color="green">使用中</Tag>
-          )
-        }
-        return <Tag color="red">未激活</Tag>
+      title: '性别',
+      dataIndex: 'sex',
+      key: 'sex',
+      render: (item: any) => {
+        const sex = _.isEqual(item, '0') ? '女' : '男';
+        return <span>{sex}</span>
       }
     },
     {
-      title: '管理员 (用户名)',
-      dataIndex: 'userName',
-      key: 'userName'
+      title: '手机号',
+      dataIndex: 'phone',
+      key: 'phone'
     },
     {
-      title: '管理员 (密码)',
-      dataIndex: 'passWord',
-      key: 'passWord'
+      title: '杀手积分',
+      dataIndex: 'killerIntegral',
+      key: 'killerIntegral'
     },
     {
-      title: '手机 (电话)',
-      dataIndex: 'phoneNumber',
-      key: 'phoneNumber'
+      title: '侦探积分',
+      dataIndex: 'detectiveIntegral',
+      key: 'detectiveIntegral'
     },
     {
-      title: '门店地址',
-      dataIndex: 'address',
-      key: 'address',
-      width: '30%'
+      title: '路人积分',
+      dataIndex: 'peopleIntegral',
+      key: 'peopleIntegral'
     },
     {
-      title: 'Action',
+      title: '总积分',
+      dataIndex: 'totalIntegral',
+      key: 'totalIntegral'
+    },
+    {
+      title: '可用积分',
+      dataIndex: 'activeIntegral',
+      key: 'activeIntegral'
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      key: 'remark'
+    },
+    {
+      title: '操作',
       key: 'action',
       render: (record: any) => (
         <Space size="middle">
-          <a onClick={() => this.editStoreModalStatusSwitch(true, record)}>修改</a>
+          <a onClick={() => this.editPlayerModalStatusSwitch(true, record)}>修改</a>
         </Space>
       )
     }
   ];
   componentDidMount() {
     this.props.dispatch({
-      type: 'storeManagement/getStoreManagementListEffect'
+      type: 'playerManagement/getPlayerManagementListEffect'
     })
   }
 
-  createStoreModalStatusSwitch = (createStoreModalStatus: boolean) => {
+  createPlayerModalStatusSwitch = (createPlayerModalStatus: boolean) => {
     this.setState({
-      createStoreModalStatus
+      createPlayerModalStatus
     })
   };
 
-  editStoreModalStatusSwitch = (editStoreModalStatus: boolean, currentEditData?: any) => {
+  editPlayerModalStatusSwitch = (editPlayerModalStatus: boolean, currentEditData?: any) => {
     this.setState({
-      editStoreModalStatus,
+      editPlayerModalStatus,
       currentEditData
     })
   };
 
   render() {
     return (
-      <div className="store-management">
-        <div className="store-search">
-          <div>人员</div>
-          <Button type="primary" onClick={() => this.createStoreModalStatusSwitch(true)}>创建门店</Button>
+      <div className="player-management">
+        <div className="player-search">
+          <StoreSearch/>
+          <Button type="primary" onClick={() => this.createPlayerModalStatusSwitch(true)}>添加玩家</Button>
         </div>
-        <div className="store-table">
-          <Table dataSource={this.state.dataSource} columns={this.columns} />
+        <div className="player-table">
+          <Table dataSource={this.props.playerManagement.playerList} columns={this.columns} />
         </div>
-        <AddStoreModel visible={this.state.createStoreModalStatus} onShow={this.createStoreModalStatusSwitch}/>
-        <EditStoreModel visible={this.state.editStoreModalStatus} currentEditData={this.state.currentEditData} onEditShow={this.editStoreModalStatusSwitch}/>
+        <AddPlayerModel visible={this.state.createPlayerModalStatus} onShow={this.createPlayerModalStatusSwitch}/>
+        <EditPlayerModel visible={this.state.editPlayerModalStatus} currentEditData={this.state.currentEditData} onEditShow={this.editPlayerModalStatusSwitch}/>
       </div>
     )
   }
 }
-
-export default connect()(PlayerManagement);
+const mapStateToProps = (state: ConnectState) => ({
+  playerManagement: state.playerManagement
+});
+type StateProps = ReturnType<typeof mapStateToProps>;
+export default connect(mapStateToProps)(PlayerManagement);

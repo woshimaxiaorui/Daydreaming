@@ -1,16 +1,16 @@
 :global {
-  .store-management {
-    .store-search {
+  .player-management {
+    .player-search {
       padding: 0 15px;
       margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
     }
-    .store-table {
+    .player-table {
       padding: 0 10px 10px 10px;
     }
   }
-  .add-store-submit-button-area {
+  .add-player-submit-button-area {
     display: flex;
     justify-content: flex-end;
     .cancel {

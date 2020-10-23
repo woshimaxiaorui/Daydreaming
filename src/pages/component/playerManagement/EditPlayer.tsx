@@ -1,11 +1,16 @@
 import React from 'react';
-import { Modal, Button, Form, Switch, Input } from 'antd';
-import { IStoreTable } from '@/pages/types/storeManagement';
+import { Modal, Button, Form, Switch, Input, Select } from 'antd';
+import { IAddPlayerExists, IPlayerTable } from '@/pages/types/playerManagement';
 import _ from 'lodash';
+import { FormInstance } from 'antd/es/form';
+import { IAddStoreExists } from '@/pages/types/storeManagement';
+import { Dispatch } from 'dva';
+import { connect } from 'react-redux';
 
 interface IProps {
   visible: boolean;
-  currentEditData: IStoreTable;
+  currentEditData: IPlayerTable;
+  dispatch: Dispatch;
   onEditShow(visible: boolean): void;
 }
 
@@ -14,125 +19,90 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 
-class EditStoreModel extends React.Component<IProps> {
-  onSubmit = (values: any) => {
-    // console.log('values=>', values);
+class EditPlayerModel extends React.Component<IProps> {
+
+  formRef = React.createRef<FormInstance>();
+
+  onSubmit = async (values: any) => {
+    console.log('values=>', values);
+    const params = {...values, playerId: values.id};
+    const submitRes: IAddPlayerExists = await this.props.dispatch({
+      type: 'playerManagement/editPlayerManagementEffect',
+      params
+    });
+    if (!submitRes.phoneExists) {
+      // @ts-ignore
+      this.formRef.current.setFields([{
+        name: 'phone',
+        errors: ['该电话号码已存在']
+      }]);
+      return;
+    }
     this.props.onEditShow(false);
   };
 
   render() {
     const initialValues = !_.isEmpty(this.props.currentEditData)
-      ? {...this.props.currentEditData, confirm: this.props.currentEditData.passWord} : {};
-    const switchStatus = !_.isEmpty(this.props.currentEditData) ? this.props.currentEditData.status : false;
+      ? {...this.props.currentEditData, sex: _.isEqual(this.props.currentEditData.sex, 0) ? '女' : '男'} : {};
     return (
       <Modal
-        title="修改门店信息"
+        title="修改玩家信息"
         visible={this.props.visible}
         footer={null}
         closable={false}
         destroyOnClose
       >
-        <Form {...layout} name="storeEditForm" initialValues={initialValues} onFinish={this.onSubmit}>
+        <Form {...layout} name="playerEditForm" ref={this.formRef} initialValues={initialValues} onFinish={this.onSubmit}>
           <Form.Item
-            name="storeName"
-            label="门店名称"
+            name="id"
+            label="ID"
+            hidden
+          />
+          <Form.Item
+            name="nickname"
+            label="昵称"
             rules={[
               {
                 required: true,
-                message: '输入门店名称!',
+                message: '输入昵称!',
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="status"
-            label="系统使用状态"
-            rules={[{required: true, message: '不可以为空'}]}
-          >
-            <Switch defaultChecked={switchStatus}/>
-          </Form.Item>
-          <Form.Item
-            name="userName"
-            label="管理员 (用户名)"
+            name="phone"
+            label="手机号"
             rules={[
               {
                 required: true,
-                message: '输入管理员 (用户名)!',
+                message: '输入手机号!',
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="passWord"
-            label="管理员 (密码)"
-            rules={[
-              {
-                required: true,
-                message: '输入密码!',
-              },
-            ]}
-            hasFeedback
+            name="sex"
+            label="性别"
           >
-            <Input.Password />
+            <Select>
+              <Select.Option value="1">男</Select.Option>
+              <Select.Option value="0">女</Select.Option>
+            </Select>
           </Form.Item>
           <Form.Item
-            name="confirm"
-            label="确认密码"
-            dependencies={['passWord']}
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: '请确认密码!',
-              },
-              ({ getFieldValue }) => ({
-                validator(rule, value) {
-                  if (!value || getFieldValue('passWord') === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject('两次输入的密码不一致!');
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            name="phoneNumber"
-            label="管理员手机号"
-            rules={[
-              {
-                required: true,
-                message: '不可以为空!',
-              }
-            ]}
-          >
-            <Input/>
-          </Form.Item>
-          <Form.Item
-            name="address"
-            label="门店地址"
-            rules={[
-              {
-                required: true,
-                message: '不可以为空!',
-              },
-              {
-                max: 200,
-                message: '不超过200个字符!',
-              }
-            ]}
+            name="remark"
+            label="备注"
           >
             <Input.TextArea/>
           </Form.Item>
-          <div className="add-store-submit-button-area">
+          <div className="add-player-submit-button-area">
             <Button
               type="primary"
               htmlType="submit"
             >
-              查询
+              修改
             </Button>
             <Button className="cancel" onClick={() => this.props.onEditShow(false)}>取消</Button>
           </div>
@@ -141,4 +111,4 @@ class EditStoreModel extends React.Component<IProps> {
     )
   }
 }
-export default EditStoreModel;
+export default connect()(EditPlayerModel);

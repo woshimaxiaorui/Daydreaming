@@ -1,8 +1,14 @@
 import React from 'react';
-import { Modal, Button, Form, Switch, Input } from 'antd';
+import { Modal, Button, Form, Select, Input } from 'antd';
+import { IAddStoreExists } from '@/pages/types/storeManagement';
+import { Dispatch } from 'dva';
+import { connect } from 'react-redux';
+import { IAddPlayerExists } from '@/pages/types/playerManagement';
+import { FormInstance } from 'antd/es/form';
 
 interface IProps {
   visible: boolean;
+  dispatch: Dispatch;
   onShow(visible: boolean): void;
 }
 
@@ -11,122 +17,91 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 
-class AddStoreModel extends React.Component<IProps> {
-  onSubmit = (values: any) => {
-    // console.log('?', values)
+class AddPlayerModel extends React.Component<IProps> {
+
+  formRef = React.createRef<FormInstance>();
+
+  onSubmit = async (values: any) => {
+    console.log('?', values);
+    const params = {
+      ...values,
+      storeId: '1'
+    };
+    const submitRes: IAddPlayerExists = await this.props.dispatch({
+      type: 'playerManagement/addPlayerManagementEffect',
+      params
+    });
+    if (!submitRes.phoneExists) {
+      const phoneError = submitRes.phoneExists ? {} : {
+        name: 'phone',
+        errors: ['手机号码已存在']
+      };
+      const errorList = [
+        phoneError
+      ];
+      // @ts-ignore
+      this.formRef.current.setFields(errorList);
+      return;
+    }
     this.props.onShow(false);
   };
 
   render() {
     return (
       <Modal
-        title="创建门店信息"
+        title="新增玩家信息"
         visible={this.props.visible}
         footer={null}
         closable={false}
         destroyOnClose
       >
-        <Form {...layout} name="storeAddForm" onFinish={this.onSubmit}>
+        <Form {...layout} name="playerAddForm" ref={this.formRef} onFinish={this.onSubmit}>
           <Form.Item
-            name="storeName"
-            label="门店名称"
+            name="nickname"
+            label="昵称"
             rules={[
               {
                 required: true,
-                message: '输入门店名称!',
+                message: '输入昵称!',
               },
             ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="status"
-            label="系统使用状态"
-            rules={[{required: true, message: '不可以为空'}]}
-          >
-            <Switch defaultChecked/>
-          </Form.Item>
-          <Form.Item
-            name="userName"
-            label="管理员 (用户名)"
+            name="phone"
+            label="手机号"
             rules={[
               {
                 required: true,
-                message: '输入管理员 (用户名)!',
+                message: '输入手机号!',
               },
             ]}
+            hasFeedback
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="passWord"
-            label="管理员 (密码)"
-            rules={[
-              {
-                required: true,
-                message: '输入密码!',
-              },
-            ]}
-            hasFeedback
+            name="sex"
+            label="性别"
           >
-            <Input.Password />
+            <Select>
+              <Select.Option value="1">男</Select.Option>
+              <Select.Option value="0">女</Select.Option>
+            </Select>
           </Form.Item>
           <Form.Item
-            name="confirm"
-            label="确认密码"
-            dependencies={['passWord']}
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: '请确认密码!',
-              },
-              ({ getFieldValue }) => ({
-                validator(rule, value) {
-                  if (!value || getFieldValue('passWord') === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject('两次输入的密码不一致!');
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            name="phoneNumber"
-            label="管理员手机号"
-            rules={[
-              {
-                required: true,
-                message: '不可以为空!',
-              }
-            ]}
-          >
-            <Input/>
-          </Form.Item>
-          <Form.Item
-            name="address"
-            label="门店地址"
-            rules={[
-              {
-                required: true,
-                message: '不可以为空!',
-              },
-              {
-                max: 200,
-                message: '不超过200个字符!',
-              }
-            ]}
+            name="remark"
+            label="备注"
           >
             <Input.TextArea/>
           </Form.Item>
-          <div className="add-store-submit-button-area">
+          <div className="add-player-submit-button-area">
             <Button
               type="primary"
               htmlType="submit"
             >
-              查询
+              提交
             </Button>
             <Button className="cancel" onClick={() => this.props.onShow(false)}>取消</Button>
           </div>
@@ -135,4 +110,4 @@ class AddStoreModel extends React.Component<IProps> {
     )
   }
 }
-export default AddStoreModel;
+export default connect()(AddPlayerModel);

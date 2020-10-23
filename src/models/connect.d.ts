@@ -4,6 +4,7 @@ import { RouterTypes } from 'umi';
 import { call } from 'redux-saga/effects';
 import * as H from 'history';
 import { IStoreManagementState } from '@/models/storeManagement';
+import { IPlayerManagementState } from '@/models/playerManagement';
 // import { IPartnerState } from '@/models/partner/partner-model';
 
 export type Effect = (
@@ -38,6 +39,7 @@ export interface ConnectState {
   router: IRoutingState;
   loading: Loading;
   storeManagement: IStoreManagementState;
+  playerManagement: IPlayerManagementState;
 }
 
 export interface Route {
