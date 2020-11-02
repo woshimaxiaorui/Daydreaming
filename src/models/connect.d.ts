@@ -5,6 +5,7 @@ import { call } from 'redux-saga/effects';
 import * as H from 'history';
 import { IStoreManagementState } from '@/models/storeManagement';
 import { IPlayerManagementState } from '@/models/playerManagement';
+import { IScriptManagementState } from '@/models/scriptManagement';
 // import { IPartnerState } from '@/models/partner/partner-model';
 
 export type Effect = (
@@ -40,6 +41,7 @@ export interface ConnectState {
   loading: Loading;
   storeManagement: IStoreManagementState;
   playerManagement: IPlayerManagementState;
+  scriptManagement: IScriptManagementState;
 }
 
 export interface Route {

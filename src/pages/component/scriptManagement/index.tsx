@@ -1,135 +1,132 @@
 import React from 'react';
 import './index.scss';
 import { Table, Tag, Button, Space } from "antd";
-import StoreSearch from './Search';
-import { IStoreTable } from '@/pages/types/storeManagement';
-import AddStoreModel from '@/pages/component/storeManagement/AddStore';
-import EditStoreModel from '@/pages/component/storeManagement/EditStore';
+import ScriptSearch from './Search';
+import { IScriptTable } from '@/pages/types/scriptManagement';
+import AddScriptModel from '@/pages/component/scriptManagement/AddScript';
+import EditScriptModel from '@/pages/component/scriptManagement/EditScript';
 import { connect } from 'react-redux';
 import { Dispatch } from 'dva';
+import ConnectState from '@/models/connect';
+import _ from 'lodash';
 
 interface IState {
-  dataSource: IStoreTable[];
-  createStoreModalStatus: boolean;
-  editStoreModalStatus: boolean;
-  currentEditData: IStoreTable;
+  createScriptModalStatus: boolean;
+  editScriptModalStatus: boolean;
+  currentEditData: IScriptTable;
 }
 
-interface IProps {
+interface IProps extends StateProps, ConnectState{
+  scriptList: IScriptTable[];
   dispatch: Dispatch
 }
 
-class StoreManagement extends React.Component<IProps, IState> {
+class ScriptManagement extends React.Component<IProps, IState> {
   state = {
-    dataSource: [
-      {
-        key: '1',
-        storeName: '白日梦 (总店)',
-        userName: 'maxiaorui',
-        passWord: '19911206',
-        phoneNumber: '15598476380',
-        address: '北京市昌平区回龙观和谐家园一区十三号楼401',
-        status: true
-      },
-      {
-        key: '2',
-        storeName: '测试门店_1',
-        userName: 'yuweipeng',
-        passWord: '19911206',
-        phoneNumber: '15598476380',
-        address: '北京市昌平区回龙观和谐家园一区十三号楼401',
-        status: false
-      }
-    ],
-    createStoreModalStatus: false,
-    editStoreModalStatus: false,
+    createScriptModalStatus: false,
+    editScriptModalStatus: false,
     currentEditData: Object.create(null)
   };
 
   columns = [
     {
-      title: '门店名称',
-      dataIndex: 'storeName',
-      key: 'storeName'
+      title: '剧本名称',
+      dataIndex: 'title',
+      key: 'title'
     },
     {
-      title: '系统使用状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: (record: boolean) => {
-        if (record) {
-          return (
-            <Tag color="green">使用中</Tag>
-          )
-        }
-        return <Tag color="red">未激活</Tag>
+      title: '类型',
+      dataIndex: 'type',
+      key: 'type'
+    },
+    {
+      title: '拥有数量',
+      dataIndex: 'amount',
+      key: 'amount',
+      align: 'right'
+    },
+    {
+      title: '适用人数',
+      dataIndex: 'applicableNumber',
+      key: 'applicableNumber',
+      align: 'right'
+    },
+    {
+      title: '游戏时间（小时）',
+      dataIndex: 'gameTime',
+      key: 'gameTime',
+      align: 'right'
+    },
+    {
+      title: '是否改编',
+      dataIndex: 'isAdapt',
+      key: 'isAdapt',
+      render: (item: any) => {
+        const isAdapt = _.isEqual(item, 0) ? '否' : '是';
+        return <span>{isAdapt}</span>
       }
     },
     {
-      title: '管理员 (用户名)',
-      dataIndex: 'userName',
-      key: 'userName'
+      title: '改编内容',
+      dataIndex: 'adaptContent',
+      key: 'adaptContent',
+      width: '20%'
     },
     {
-      title: '管理员 (密码)',
-      dataIndex: 'passWord',
-      key: 'passWord'
-    },
-    {
-      title: '手机 (电话)',
-      dataIndex: 'phoneNumber',
-      key: 'phoneNumber'
-    },
-    {
-      title: '门店地址',
-      dataIndex: 'address',
-      key: 'address',
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
       width: '30%'
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'action',
       render: (record: any) => (
         <Space size="middle">
-          <a onClick={() => this.editStoreModalStatusSwitch(true, record)}>修改</a>
+          <a onClick={() => this.editScriptModalStatusSwitch(true, record)}>修改</a>
         </Space>
       )
     }
   ];
   componentDidMount() {
     this.props.dispatch({
-      type: 'storeManagement/getStoreManagementListEffect'
+      type: 'scriptManagement/getScriptManagementListEffect'
     })
   }
 
-  createStoreModalStatusSwitch = (createStoreModalStatus: boolean) => {
+  createScriptModalStatusSwitch = (createScriptModalStatus: boolean) => {
     this.setState({
-      createStoreModalStatus
+      createScriptModalStatus
     })
   };
 
-  editStoreModalStatusSwitch = (editStoreModalStatus: boolean, currentEditData?: any) => {
+  editScriptModalStatusSwitch = (editScriptModalStatus: boolean, currentEditData?: any) => {
     this.setState({
-      editStoreModalStatus,
+      editScriptModalStatus,
       currentEditData
     })
   };
 
   render() {
     return (
-      <div className="store-management">
-        <div className="store-search">
-          <StoreSearch/>
-          <Button type="primary" onClick={() => this.createStoreModalStatusSwitch(true)}>创建门店</Button>
+      <div className="script-management">
+        <div className="script-search">
+          <ScriptSearch/>
+          <Button type="primary" onClick={() => this.createScriptModalStatusSwitch(true)}>创建剧本</Button>
         </div>
-        <div className="store-table">
-          <Table dataSource={this.state.dataSource} columns={this.columns} />
+        <div className="script-table">
+          <Table dataSource={this.props.scriptList} columns={this.columns} />
         </div>
-        <AddStoreModel visible={this.state.createStoreModalStatus} onShow={this.createStoreModalStatusSwitch}/>
-        <EditStoreModel visible={this.state.editStoreModalStatus} currentEditData={this.state.currentEditData} onEditShow={this.editStoreModalStatusSwitch}/>
+        <AddScriptModel visible={this.state.createScriptModalStatus} onShow={this.createScriptModalStatusSwitch}/>
+        <EditScriptModel visible={this.state.editScriptModalStatus} currentEditData={this.state.currentEditData} onEditShow={this.editScriptModalStatusSwitch}/>
       </div>
     )
   }
 }
 
-export default connect()(StoreManagement);
+const mapStateToProps = (state: ConnectState) => ({
+  scriptList: state.scriptManagement.scriptList
+});
+type StateProps = ReturnType<typeof mapStateToProps>;
+
+export default connect(mapStateToProps)(ScriptManagement);

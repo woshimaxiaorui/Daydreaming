@@ -10,7 +10,6 @@ import { Dispatch } from 'dva';
 import ConnectState from '@/models/connect';
 
 interface IState {
-  dataSource: IPlayerTable[];
   createPlayerModalStatus: boolean;
   editPlayerModalStatus: boolean;
   currentEditData: IPlayerTable;

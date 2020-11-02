@@ -1,42 +1,61 @@
 import React from 'react';
-import { Form, Input, Button, Select } from 'antd';
-
+import { Form, Input, Button, Select, InputNumber } from 'antd';
+import { connect } from 'react-redux';
+import { Dispatch } from 'dva';
+import { FormInstance } from 'antd/es/form';
 const { Option } = Select;
 
-class StoreSearch extends React.Component {
-  onSearch = (values: any) => {
-    // console.log('>>', values);
-  };
+interface IProps {
+  dispatch: Dispatch;
+}
 
+class ScriptSearch extends React.Component<IProps> {
+  formRef = React.createRef<FormInstance>();
+  onSearch = (values: any) => {
+    const params = {
+      storeId: 1,
+      title: values.title,
+      type: values.type,
+      applicableNumber: values.applicableNumber,
+      isAdapt: values.isAdapt
+    };
+    this.props.dispatch({
+      type: 'scriptManagement/getScriptManagementListEffect',
+      params
+    });
+  };
+  onClearAll = () => {
+    this.formRef.current.resetFields();
+  };
   render() {
     return (
-      <Form name="StoreSearch" layout="inline" onFinish={this.onSearch}>
+      <Form name="ScriptSearch" ref={this.formRef} layout="inline" onFinish={this.onSearch}>
         <Form.Item
-          name="status"
-          label="系统使用状态"
+          name="isAdapt"
+          label="是否改編"
         >
           <Select style={{ width: 100 }} allowClear>
-            <Option value="true">使用中</Option>
-            <Option value="false">未激活</Option>
+            <Option value="true">是</Option>
+            <Option value="false">否</Option>
           </Select>
         </Form.Item>
         <Form.Item
-          name="storeName"
+          name="title"
         >
-          <Input placeholder="门店名称" />
+          <Input placeholder="剧本名称" />
         </Form.Item>
         <Form.Item
-          name="userName"
+          name="type"
         >
           <Input
-            placeholder="管理员名"
+            placeholder="剧本类型"
           />
         </Form.Item>
         <Form.Item
-          name="phoneNumber"
+          name="applicableNumber"
         >
-          <Input
-            placeholder="手机号"
+          <InputNumber
+            placeholder="适用人数"
           />
         </Form.Item>
         <Form.Item>
@@ -46,10 +65,11 @@ class StoreSearch extends React.Component {
           >
             查询
           </Button>
+          <Button style={{marginLeft: 5}} type="primary" onClick={this.onClearAll}>清除</Button>
         </Form.Item>
       </Form>
     )
   }
 }
 
-export default StoreSearch;
+export default connect()(ScriptSearch);

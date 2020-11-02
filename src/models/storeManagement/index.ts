@@ -34,7 +34,6 @@ const partnerModel: IStoreManagementModelType = {
   },
   effects: {
     *getStoreManagementListEffect({ params }, { put , call }) {
-      console.log('params=>', params);
       const res: IStoreResponse = yield call(StoreManagementService.queryStoreManagementListApi, params);
       if (_.isEmpty(res)) {
         return false;
