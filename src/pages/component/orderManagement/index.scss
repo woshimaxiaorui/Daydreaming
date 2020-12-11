@@ -1,0 +1,68 @@
+:global {
+  .order-management {
+    .order-search {
+      padding: 0 15px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .order-card {
+      padding: 0 10px 10px 10px;
+    }
+    .order-card-content-use {
+      background-color: #888888;
+    }
+    .order-card-content {
+      background-color: #FFFFFF;
+    }
+    .order-card-desk {
+      font-size: 50px;
+    }
+  }
+  .add-order-submit-button-area {
+    display: flex;
+    justify-content: flex-end;
+    .cancel {
+      margin-left: 10px;
+    }
+  }
+  .settlement-order-detail-list{
+    .title-list {
+      display: flex;
+      font-size: larger;
+      span {
+        width: (100% / 6);
+        display: flex;
+        justify-content: center;
+      }
+      span:first-child {
+        justify-content: flex-start;
+      }
+      span:last-child {
+        justify-content: flex-end;
+      }
+    }
+    .value-list {
+      display: flex;
+      span {
+        width: (100% / 6);
+        display: flex;
+        justify-content: center;
+      }
+      span:first-child {
+        justify-content: flex-start;
+      }
+      span:last-child {
+        justify-content: flex-end;
+      }
+    }
+    .total-price {
+      display: flex;
+      justify-content: flex-end;
+      span {
+        margin-left: 20px;
+      }
+      margin: 10px 0;
+    }
+  }
+}
