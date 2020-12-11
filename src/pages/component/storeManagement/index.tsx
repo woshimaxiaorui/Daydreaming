@@ -1,13 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { ConnectState, ConnectProps } from '@/models/connect';
 import './index.scss';
 import { Table, Tag, Button, Space } from "antd";
 import StoreSearch from './Search';
 import { IStoreTable } from '@/pages/types/storeManagement';
 import AddStoreModel from '@/pages/component/storeManagement/AddStore';
 import EditStoreModel from '@/pages/component/storeManagement/EditStore';
-import { connect } from 'react-redux';
-import { Dispatch } from 'dva';
-import ConnectState from '@/models/connect';
 
 interface IState {
   createStoreModalStatus: boolean;
@@ -15,9 +14,8 @@ interface IState {
   currentEditData: IStoreTable;
 }
 
-interface IProps extends StateProps, ConnectState{
+interface IProps extends StateProps, ConnectProps {
   storeList: IStoreTable[];
-  dispatch: Dispatch
 }
 
 class StoreManagement extends React.Component<IProps, IState> {
@@ -72,7 +70,7 @@ class StoreManagement extends React.Component<IProps, IState> {
       key: 'action',
       render: (record: any) => (
         <Space size="middle">
-          <a onClick={() => this.editStoreModalStatusSwitch(true, record)}>修改</a>
+          <a onClick={ () => this.editStoreModalStatusSwitch(true, record) }>修改</a>
         </Space>
       )
     }
@@ -81,6 +79,7 @@ class StoreManagement extends React.Component<IProps, IState> {
     this.props.dispatch({
       type: 'storeManagement/getStoreManagementListEffect'
     });
+
   }
 
   createStoreModalStatusSwitch = (createStoreModalStatus: boolean) => {

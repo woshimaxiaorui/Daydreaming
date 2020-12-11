@@ -25,7 +25,15 @@ const routes = [
               {
                 path: '/scriptManagement',
                 component: '../pages/component/scriptManagement/index'
-              }
+              },
+              {
+                path: '/deskManagement',
+                component: '../pages/component/deskManagement/index'
+              },
+              {
+                path: '/orderManagement',
+                component: '../pages/component/orderManagement/index'
+              },
             ]
           }
         ]

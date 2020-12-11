@@ -3,6 +3,7 @@ import { Form, Input, Button, Select, InputNumber } from 'antd';
 import { connect } from 'react-redux';
 import { Dispatch } from 'dva';
 import { FormInstance } from 'antd/es/form';
+import _ from 'lodash';
 const { Option } = Select;
 
 interface IProps {
@@ -25,7 +26,10 @@ class ScriptSearch extends React.Component<IProps> {
     });
   };
   onClearAll = () => {
-    this.formRef.current.resetFields();
+    if(!_.isEmpty(this.formRef.current)){
+      // @ts-ignore
+      this.formRef.current.resetFields();
+    }
   };
   render() {
     return (

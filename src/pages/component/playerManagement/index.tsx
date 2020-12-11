@@ -1,13 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { ConnectState, ConnectProps } from '@/models/connect';
+import _ from 'lodash';
 import './index.scss';
 import { Table, Tag, Button, Space } from "antd";
 import { IPlayerTable } from '@/pages/types/playerManagement';
 import AddPlayerModel from '@/pages/component/playerManagement/AddPlayer';
 import EditPlayerModel from '@/pages/component/playerManagement/EditPlayer';
 import StoreSearch from './Search';
-import { connect } from 'react-redux';
-import { Dispatch } from 'dva';
-import ConnectState from '@/models/connect';
 
 interface IState {
   createPlayerModalStatus: boolean;
@@ -15,8 +15,7 @@ interface IState {
   currentEditData: IPlayerTable;
 }
 
-interface IProps extends StateProps, ConnectState {
-  dispatch: Dispatch
+interface IProps extends StateProps, ConnectProps {
 }
 
 class PlayerManagement extends React.Component<IProps, IState> {

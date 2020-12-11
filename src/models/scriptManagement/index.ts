@@ -12,7 +12,7 @@ export interface IScriptManagement {
 
 export interface IScriptManagementModeType {
   namespace: 'scriptManagement';
-  state: IScriptManagement;
+  state: IScriptManagementState;
   effects: {
     getScriptManagementListEffect: Effect;
     addScriptManagementEffect: Effect;

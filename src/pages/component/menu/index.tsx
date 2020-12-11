@@ -23,6 +23,14 @@ class LeftMenu extends React.Component<any, IState> {
       {
         menuTitle: '剧本管理',
         menuPath: 'scriptManagement'
+      },
+      {
+        menuTitle: '桌台管理',
+        menuPath: 'deskManagement'
+      },
+      {
+        menuTitle: '订单管理',
+        menuPath: 'orderManagement'
       }
     ]
   };

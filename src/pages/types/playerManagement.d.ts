@@ -1,17 +1,18 @@
 import { IResponse } from '@/pages/types/public';
+import { IUserTable } from '@/pages/types/userManagement';
 
-export interface IPlayerTable {
-  nickname: string;
-  phone: string;
+export interface IPlayerTable extends IUserTable {
   killerIntegral: string;
   detectiveIntegral: string;
   peopleIntegral: string;
   totalIntegral: string;
   activeIntegral: string;
-  sex?: string;
-  remark?: string;
-  id?: string;
-  key?: string;
+  // nickname: string;
+  // phone: string;
+  // sex?: string;
+  // remark?: string;
+  // id?: string;
+  // key?: string;
 }
 
 export interface IPlayerResponse extends IResponse {

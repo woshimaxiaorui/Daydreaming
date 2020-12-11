@@ -51,7 +51,7 @@ class EditScriptModel extends React.Component<IProps> {
     const switchIsAdapt = !_.isEmpty(initialValues) ? initialValues.isAdapt : false;
     return (
       <Modal
-        title="创建剧本信息"
+        title="修改剧本信息"
         visible={this.props.visible}
         footer={null}
         closable={false}

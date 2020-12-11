@@ -1,14 +1,15 @@
 import { IResponse } from '@/pages/types/public';
 
 export interface IScriptTable {
-  title: string;
+  title?: string;
   type: string;
   amount: number;
   costPrice: number;
+  formatPrice: number;
   description: string;
   applicableNumber: number;
   gameTime: number;
-  isAdapt: boolean;
+  isAdapt?: boolean;
   adaptContent: string;
   id?: string;
   key?: string;
@@ -19,7 +20,7 @@ export interface IScriptResponse extends IResponse {
 }
 
 export interface IAddScriptResponse extends IResponse {
-  data: []
+  data: [];
 }
 
 export interface ISearchScript {

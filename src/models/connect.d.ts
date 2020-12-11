@@ -6,6 +6,8 @@ import * as H from 'history';
 import { IStoreManagementState } from '@/models/storeManagement';
 import { IPlayerManagementState } from '@/models/playerManagement';
 import { IScriptManagementState } from '@/models/scriptManagement';
+import { IDeskManagementState } from '@/models/deskManagement';
+import { IUserManagementState } from '@/models/userManagement';
 // import { IPartnerState } from '@/models/partner/partner-model';
 
 export type Effect = (
@@ -41,7 +43,9 @@ export interface ConnectState {
   loading: Loading;
   storeManagement: IStoreManagementState;
   playerManagement: IPlayerManagementState;
+  userManagement: IUserManagementState;
   scriptManagement: IScriptManagementState;
+  deskManagement: IDeskManagementState;
 }
 
 export interface Route {
@@ -52,7 +56,7 @@ export interface Route {
  * @type T: Params matched in dynamic routing
  */
 export interface ConnectProps<T extends { [key: string]: any } = {}> extends Partial<RouterTypes<Route>> {
-  dispatch?: Dispatch;
+  dispatch: Dispatch;
 }
 
 export default ConnectState;

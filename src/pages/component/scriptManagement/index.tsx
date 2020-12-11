@@ -1,14 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { ConnectState, ConnectProps } from '@/models/connect';
+import _ from 'lodash';
 import './index.scss';
-import { Table, Tag, Button, Space } from "antd";
+import { Table, Button, Space } from "antd";
 import ScriptSearch from './Search';
 import { IScriptTable } from '@/pages/types/scriptManagement';
 import AddScriptModel from '@/pages/component/scriptManagement/AddScript';
 import EditScriptModel from '@/pages/component/scriptManagement/EditScript';
-import { connect } from 'react-redux';
-import { Dispatch } from 'dva';
-import ConnectState from '@/models/connect';
-import _ from 'lodash';
 
 interface IState {
   createScriptModalStatus: boolean;
@@ -16,9 +15,8 @@ interface IState {
   currentEditData: IScriptTable;
 }
 
-interface IProps extends StateProps, ConnectState{
+interface IProps extends StateProps, ConnectProps {
   scriptList: IScriptTable[];
-  dispatch: Dispatch
 }
 
 class ScriptManagement extends React.Component<IProps, IState> {
@@ -42,20 +40,17 @@ class ScriptManagement extends React.Component<IProps, IState> {
     {
       title: '拥有数量',
       dataIndex: 'amount',
-      key: 'amount',
-      align: 'right'
+      key: 'amount'
     },
     {
       title: '适用人数',
       dataIndex: 'applicableNumber',
-      key: 'applicableNumber',
-      align: 'right'
+      key: 'applicableNumber'
     },
     {
       title: '游戏时间（小时）',
       dataIndex: 'gameTime',
-      key: 'gameTime',
-      align: 'right'
+      key: 'gameTime'
     },
     {
       title: '是否改编',
@@ -89,8 +84,12 @@ class ScriptManagement extends React.Component<IProps, IState> {
     }
   ];
   componentDidMount() {
+    const params = {
+      storeId: 1
+    }
     this.props.dispatch({
-      type: 'scriptManagement/getScriptManagementListEffect'
+      type: 'scriptManagement/getScriptManagementListEffect',
+      params
     })
   }
 
@@ -115,7 +114,9 @@ class ScriptManagement extends React.Component<IProps, IState> {
           <Button type="primary" onClick={() => this.createScriptModalStatusSwitch(true)}>创建剧本</Button>
         </div>
         <div className="script-table">
-          <Table dataSource={this.props.scriptList} columns={this.columns} />
+          <Table
+            dataSource={this.props.scriptList}
+            columns={this.columns} />
         </div>
         <AddScriptModel visible={this.state.createScriptModalStatus} onShow={this.createScriptModalStatusSwitch}/>
         <EditScriptModel visible={this.state.editScriptModalStatus} currentEditData={this.state.currentEditData} onEditShow={this.editScriptModalStatusSwitch}/>
