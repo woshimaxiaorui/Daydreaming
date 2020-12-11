@@ -1,0 +1,20 @@
+:global {
+  .desk-management {
+    .desk-search {
+      padding: 0 15px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .desk-table {
+      padding: 0 10px 10px 10px;
+    }
+  }
+  .add-desk-submit-button-area {
+    display: flex;
+    justify-content: flex-end;
+    .cancel {
+      margin-left: 10px;
+    }
+  }
+}
