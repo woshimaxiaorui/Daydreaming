@@ -9,7 +9,6 @@ interface IProps {
 
 class PlayerSearch extends React.Component<IProps> {
   onSearch = (values: any) => {
-    console.log('>>', values);
     this.props.dispatch({
       type: 'playerManagement/getPlayerManagementListEffect',
       params: values

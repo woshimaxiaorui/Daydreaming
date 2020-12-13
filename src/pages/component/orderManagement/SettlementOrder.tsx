@@ -24,14 +24,6 @@ interface IState {
   orderDetailIntegralList: IOrderDetailIntegralTable[];
 }
 
-interface IPriceList  {
-  [key: string]: IPrice;
-}
-
-interface IPrice {
-  discountPrice: number;
-}
-
 const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
@@ -50,8 +42,6 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
     /// orderDetailList
     this.setState({
       orderDetailList: [...getOrderDetailListForTable(this.props.currentData.detailList ?? []) as IOrderDetailTable[] ]
-    },() => {
-      console.log('orderDetailList',this.state.orderDetailList);
     });
 
     /// roleList
@@ -137,8 +127,6 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
 
     await this.setState({
       orderDetailList: tempOrderDetailList
-    }, () => {
-      console.log('callback:',this.state.orderDetailList);
     });
   }
 
@@ -167,7 +155,7 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
     });
   }
 
-  render(){
+  render() {
     const initialValues = { ...this.props.currentData };
     return (
       <Modal
@@ -261,7 +249,7 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
             }
             <div className="total-price">
               <span>剧本开本价:</span>
-              <span>￥{ initialValues.scriptInfo.formatPrice.toFixed(2) }</span>
+              <span>￥{ Number(initialValues.scriptInfo.formatPrice).toFixed(2) }</span>
               <span>应收总价:</span>
               <span>￥{ this.state.orderReceivablePrice.toFixed(2) }</span>
               <span>实收总价:</span>

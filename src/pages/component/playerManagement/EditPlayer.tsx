@@ -24,7 +24,6 @@ class EditPlayerModel extends React.Component<IProps> {
   formRef = React.createRef<FormInstance>();
 
   onSubmit = async (values: any) => {
-    console.log('values=>', values);
     const params = {...values, playerId: values.id};
     const submitRes: IAddPlayerExists = await this.props.dispatch({
       type: 'playerManagement/editPlayerManagementEffect',

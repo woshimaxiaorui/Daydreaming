@@ -22,7 +22,6 @@ class AddPlayerModel extends React.Component<IProps> {
   formRef = React.createRef<FormInstance>();
 
   onSubmit = async (values: any) => {
-    console.log('?', values);
     const params = {
       ...values,
       storeId: '1'

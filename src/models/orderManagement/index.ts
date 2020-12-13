@@ -12,7 +12,7 @@ export interface IOrderManagement {
 
 export interface IOrderManagementModeType {
   namespace: 'orderManagement';
-  state: IOrderManagement;
+  state: IOrderManagementState;
   effects: {
     getOrderManagementListEffect: Effect;
     addOrderManagementEffect: Effect;

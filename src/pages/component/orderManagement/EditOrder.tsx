@@ -35,7 +35,7 @@ class AddOrderModel extends React.Component<IProps, IState> {
   async componentDidMount() {
     /// orderDetailList
     this.setState({
-      orderDetailList: [...getOrderDetailListForTable(this.props.currentData.detailList)]
+      orderDetailList: [...getOrderDetailListForTable(this.props.currentData.detailList || [])]
     });
 
     /// scriptList

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Form, Switch, Input, InputNumber } from 'antd';
+import { Modal, Button, Form, Switch, Input } from 'antd';
 import { IAddDeskResponse } from '@/pages/types/deskManagement';
 import { connect } from 'react-redux'
 import { Dispatch } from '@/models/connect';
