@@ -5,7 +5,6 @@ import { ILoginCheckResponse, ILoginUserTable } from '@/pages/types/loginCheck';
 import * as loginManagementService from '@/services/loginManagement';
 import storage from '@/utils/storage';
 import { Reducer } from 'redux';
-import { IUserTable } from '@/pages/types/userManagement';
 
 export interface IUserManagement {
   [key: string]: any;
@@ -18,18 +17,18 @@ export interface ILoginManagementModeType {
     loginCheckEffect: Effect;
   };
   reducers: {
-    setLoginUserInfoReducer: Reducer<IUserTable>;
+    setLoginUserInfoReducer: Reducer<IUserManagement>;
   };
 }
 
 export interface IUserManagementState {
-  userInfo: IUserTable;
+  userInfo: ILoginUserTable;
 }
 
 const partnerModel: ILoginManagementModeType = {
   namespace: 'loginManagement',
   state: {
-    userInfo: {}
+    userInfo: {} as ILoginUserTable
   },
   effects: {
     *loginCheckEffect({ params },{ put, call }) {

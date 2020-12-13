@@ -1,14 +1,14 @@
 import { IResponse } from '@/pages/types/public';
 
 export interface IUserTable {
-  role?: string;
-  storeId?: string;
-  nickname?: string;
-  sex?: string;
-  phone?: string;
-  remark?: string;
-  id?: string;
-  key?: string;
+  role: string;
+  storeId: string;
+  nickname: string;
+  sex: string;
+  phone: string;
+  remark: string;
+  id: string;
+  key: string;
 }
 
 export interface IUserResponse extends IResponse {

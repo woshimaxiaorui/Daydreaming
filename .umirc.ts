@@ -34,6 +34,9 @@ const routes = [
                 path: '/orderManagement',
                 component: '../pages/component/orderManagement/index'
               },
+              {
+                component: '../pages/component/404'
+              }
             ]
           }
         ]
