@@ -8,6 +8,8 @@ import { IPlayerManagementState } from '@/models/playerManagement';
 import { IScriptManagementState } from '@/models/scriptManagement';
 import { IDeskManagementState } from '@/models/deskManagement';
 import { IUserManagementState } from '@/models/userManagement';
+import { IOrderManagementState } from '@/models/orderManagement';
+import { ILoginUserManagementState } from '@/models/loginManagement';
 // import { IPartnerState } from '@/models/partner/partner-model';
 
 export type Effect = (
@@ -46,6 +48,8 @@ export interface ConnectState {
   userManagement: IUserManagementState;
   scriptManagement: IScriptManagementState;
   deskManagement: IDeskManagementState;
+  orderManagement: IOrderManagementState;
+  loginManagement: ILoginUserManagementState;
 }
 
 export interface Route {

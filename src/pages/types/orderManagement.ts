@@ -8,9 +8,7 @@ export interface IOrderTable {
   orderNo: string;
   scriptId: number;
   scriptInfo: IScriptTable;
-  // scriptTitle: string;
   deskId: string;
-  // deskTitle: string;
   deskInfo: IDeskTable;
   hostId: string;
   hostInfo: IUserTable;
@@ -18,7 +16,6 @@ export interface IOrderTable {
   realMoney: number;
   orderOperatorId: string;
   orderOperatorInfo: IUserTable;
-  // orderOperatorNickname: string;
   orderTime: string;
   settlementTime: string;
   status: string;

@@ -1,5 +1,11 @@
 import { IResponse } from '@/pages/types/public';
 
+export interface ISystemUserTable {
+  userName: string;
+  password: string;
+  realName: string;
+}
+
 export interface IUserTable {
   role: string;
   storeId: string;

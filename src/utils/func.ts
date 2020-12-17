@@ -46,8 +46,6 @@ export const dateAdd = (part: string, n: number, date: string) => {
   return formatTime(new Date(formatDate).getTime(),'Y-m-d H:i:s');
 }
 
-// 格式化日期，如月、日、时、分、秒保证为2位数
-
 /**
  * 格式化日期单位，如月、日、时、分、秒保证为2位数
  * @param n
@@ -57,7 +55,6 @@ export const formatNumber = (n: any) => {
   return n[1] ? n : '0' + n;
 }
 
-// 参数number为毫秒时间戳，format为需要转换成的日期格式
 /**
  * 格式化日期
  * @param number

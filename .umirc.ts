@@ -35,6 +35,10 @@ const routes = [
                 component: '../pages/component/orderManagement/index'
               },
               {
+                path: '/orderHistoryList',
+                component: '../pages/component/orderManagement/orderHistoryList'
+              },
+              {
                 component: '../pages/component/404'
               }
             ]

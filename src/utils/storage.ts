@@ -1,3 +1,4 @@
+import _ from 'lodash';
 
 const userStorage = 'loginUserToken';
 export default {
@@ -5,7 +6,8 @@ export default {
     localStorage.setItem(userStorage,userToken);
   },
   getUserToken() {
-    return localStorage.getItem(userStorage);
+    const userToken = localStorage.getItem(userStorage);
+    return !_.isNull(userToken) ? userToken : '';
   },
   removeUserToken() {
     localStorage.removeItem(userStorage);

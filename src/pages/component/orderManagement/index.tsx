@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
-import { Button, Space, Table } from 'antd';
+import { Space, Table } from 'antd';
 import { dateAdd } from '@/utils/func';
 
 import './index.scss';
@@ -115,7 +115,7 @@ class OrderManagement extends React.Component<IProps, IState> {
       <div className="order-management">
         <div className="order-search">
           <span></span>
-          <Button type="primary">创建</Button>
+          {/*<Button type="primary">创建</Button>*/}
         </div>
         <div className="order-table">
           <Table

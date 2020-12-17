@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
 import './index.scss';
-import { Table, Tag, Button, Space } from "antd";
+import { Table, Button, Space } from "antd";
 import { IPlayerTable } from '@/pages/types/playerManagement';
 import AddPlayerModel from '@/pages/component/playerManagement/AddPlayer';
 import EditPlayerModel from '@/pages/component/playerManagement/EditPlayer';
@@ -29,8 +29,7 @@ class PlayerManagement extends React.Component<IProps, IState> {
     {
       title: '昵称',
       dataIndex: 'nickname',
-      key: 'nickname',
-      width: '15%'
+      key: 'nickname'
     },
     {
       title: '性别',
@@ -52,9 +51,29 @@ class PlayerManagement extends React.Component<IProps, IState> {
       key: 'killerIntegral'
     },
     {
+      title: '杀手排名',
+      dataIndex: 'killerRanking',
+      key: 'killerRanking'
+    },
+    {
+      title: '杀手称号',
+      dataIndex: 'killerTitle',
+      key: 'killerTitle'
+    },
+    {
       title: '侦探积分',
       dataIndex: 'detectiveIntegral',
       key: 'detectiveIntegral'
+    },
+    {
+      title: '侦探排名',
+      dataIndex: 'detectiveRanking',
+      key: 'detectiveRanking'
+    },
+    {
+      title: '侦探称号',
+      dataIndex: 'detectiveTitle',
+      key: 'detectiveTitle'
     },
     {
       title: '路人积分',
@@ -62,9 +81,29 @@ class PlayerManagement extends React.Component<IProps, IState> {
       key: 'peopleIntegral'
     },
     {
-      title: '总积分',
+      title: '路人排名',
+      dataIndex: 'peopleRanking',
+      key: 'peopleRanking'
+    },
+    {
+      title: '路人称号',
+      dataIndex: 'peopleTitle',
+      key: 'peopleTitle'
+    },
+    {
+      title: '总榜积分',
       dataIndex: 'totalIntegral',
       key: 'totalIntegral'
+    },
+    {
+      title: '总榜排名',
+      dataIndex: 'totalRanking',
+      key: 'totalRanking'
+    },
+    {
+      title: '总榜称号',
+      dataIndex: 'totalTitle',
+      key: 'totalTitle'
     },
     {
       title: '可用积分',

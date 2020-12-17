@@ -31,7 +31,11 @@ class LeftMenu extends React.Component<any, IState> {
       {
         menuTitle: '订单管理',
         menuPath: 'orderManagement'
-      }
+      },
+      {
+        menuTitle: '订单历史记录',
+        menuPath: 'orderHistoryList'
+      },
     ]
   };
 
@@ -41,22 +45,26 @@ class LeftMenu extends React.Component<any, IState> {
   };
   render() {
     return (
-      <Menu
-        style={{ width: 200 }}
-        defaultSelectedKeys={['storeManagement']}
-        mode="inline"
-      >
-        {
-          _.map(this.state.menuList, item => <Menu.Item
-            key={item.menuPath}
-            onClick={() => this.menuClick(item.menuPath)}
-          >
-            <span>
-              {item.menuTitle}
-            </span>
-          </Menu.Item>)
-        }
-      </Menu>
+      <div>
+        <div className="logo" />
+        <Menu
+          style={{ width: 200 }}
+          defaultSelectedKeys={['storeManagement']}
+          mode="inline"
+          theme="dark"
+        >
+          {
+            _.map(this.state.menuList, item => <Menu.Item
+              key={item.menuPath}
+              onClick={() => this.menuClick(item.menuPath)}
+            >
+              <span>
+                {item.menuTitle}
+              </span>
+            </Menu.Item>)
+          }
+        </Menu>
+      </div>
     )
   }
 }

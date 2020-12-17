@@ -12,7 +12,7 @@ export interface IUserManagement {
 
 export interface ILoginManagementModeType {
   namespace: 'loginManagement';
-  state: IUserManagementState;
+  state: ILoginUserManagementState;
   effects: {
     loginCheckEffect: Effect;
   };
@@ -21,7 +21,7 @@ export interface ILoginManagementModeType {
   };
 }
 
-export interface IUserManagementState {
+export interface ILoginUserManagementState {
   userInfo: ILoginUserTable;
 }
 

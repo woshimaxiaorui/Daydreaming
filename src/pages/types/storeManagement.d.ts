@@ -1,10 +1,10 @@
 import { IResponse } from '@/pages/types/public';
+import { ISystemUserTable } from '@/pages/types/userManagement';
 
 export interface IStoreTable {
   storeName: string;
-  userName: string;
-  realName: string;
-  passWord: string;
+  bossId: string;
+  bossInfo?: ISystemUserTable;
   phoneNumber: string;
   address: string;
   status: boolean;

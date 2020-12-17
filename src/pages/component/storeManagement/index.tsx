@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ConnectState, ConnectProps } from '@/models/connect';
+import _ from 'lodash';
 import './index.scss';
 import { Table, Tag, Button, Space } from "antd";
 import StoreSearch from './Search';
@@ -46,13 +47,23 @@ class StoreManagement extends React.Component<IProps, IState> {
     },
     {
       title: '管理员账号 (真实姓名)',
-      dataIndex: 'userName',
-      key: 'userName'
+      key: 'userName',
+      render: (record: any) => {
+        if (!_.isEmpty(record.bossInfo)) {
+          return record.bossInfo.userName;
+        }
+        return '';
+      }
     },
     {
       title: '管理员 (密码)',
-      dataIndex: 'passWord',
-      key: 'passWord'
+      key: 'passWord',
+      render: (record: any) => {
+        if (!_.isEmpty(record.bossInfo)) {
+          return record.bossInfo.password;
+        }
+        return '';
+      }
     },
     {
       title: '手机 (电话)',
