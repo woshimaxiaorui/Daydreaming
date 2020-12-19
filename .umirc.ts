@@ -5,10 +5,12 @@ const routes = [
     path: '/',
     component: '../layouts/index',
     routes: [
-      { path: '/login',
+      {
+        path: '/login',
         component: '../pages/component/login/index'
       },
-      { path: '/',
+      {
+        path: '/',
         component: '../pages/index',
         routes: [
           { path: '/',

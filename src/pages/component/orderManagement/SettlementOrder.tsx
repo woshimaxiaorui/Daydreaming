@@ -66,7 +66,7 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
   }
 
   onDiscountChange = async (value: number, detailItem: IOrderDetailTable) => {
-    if(!_.isNumber(value) || value > 1){
+    if(!_.isNumber(value) || value > 100){
       return;
     }
     const { orderDetailList } = this.state;
@@ -76,15 +76,15 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
       }
       return {
         ...item,
-        discount: Number(value),
-        discountPrice: Number(_.isUndefined(item.unitPrice) ? 0 : item.unitPrice) * Number(value)
+        discount: (Number(value) / 100),
+        discountPrice: Number(_.isUndefined(item.unitPrice) ? 0 : item.unitPrice) * (Number(value) / 100)
       }
     });
 
     await this.setState({
       orderDetailList: tempOrderDetailList
     });
-    this.changeOrderRealPrice();
+    await this.changeOrderRealPrice();
   }
 
   changeOrderRealPrice = async () => {
@@ -237,7 +237,13 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
                         }
                         <span>
                           <Form.Item>
-                            <InputNumber size={'small'} defaultValue={ item.discount } max={1} min={0} onChange={(value) => this.onDiscountChange(Number(value), item)} />
+                            <InputNumber
+                              defaultValue={100}
+                              min={0}
+                              max={100}
+                              formatter={value => `${value}%`}
+                              parser={value => value.replace('%', '')}
+                              size={'small'} onChange={(value) => this.onDiscountChange(Number(value), item)} />
                           </Form.Item>
                         </span>
                         <span>

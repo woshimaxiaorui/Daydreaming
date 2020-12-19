@@ -21,25 +21,27 @@ class Login extends React.Component<IProps, IState> {
     checkResult: false
   }
 
-  login = async (values: any) => {
+  loginClick = (values: any) => {
     this.setState({
       submitting: true
+    }, async () => {
+      const params = {
+        ...values
+      }
+      const submitRes = await this.props.dispatch({
+        type: 'loginManagement/loginCheckEffect',
+        params
+      });
+      if(submitRes){
+        router.push('/');
+        return;
+      }
+      this.setState({
+        submitting: false,
+        checkResult: true
+      });
     });
-    const params = {
-      ...values
-    }
-    const submitRes = await this.props.dispatch({
-      type: 'loginManagement/loginCheckEffect',
-      params
-    });
-    if(submitRes){
-      router.push('/');
-      return;
-    }
-    this.setState({
-      submitting: false,
-      checkResult: true
-    });
+
   }
 
   render() {
@@ -51,7 +53,7 @@ class Login extends React.Component<IProps, IState> {
           <Form
             name="normal_login"
             className="login-form"
-            onFinish={this.login}
+            onFinish={this.loginClick}
           >
             <div className="login-check-result">
               {

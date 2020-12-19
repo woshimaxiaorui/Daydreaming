@@ -4,7 +4,7 @@ import { ISystemUserTable } from '@/pages/types/userManagement';
 export interface IStoreTable {
   storeName: string;
   bossId: string;
-  bossInfo?: ISystemUserTable;
+  bossInfo: ISystemUserTable;
   phoneNumber: string;
   address: string;
   status: boolean;

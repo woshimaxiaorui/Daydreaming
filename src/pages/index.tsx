@@ -5,12 +5,12 @@ import router from 'umi/router';
 import { useAuth } from '@/utils/useAuth';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import { connect } from 'react-redux';
-import { Layout, Menu, Dropdown, Avatar } from 'antd';
+import { Layout, Menu, Dropdown, Avatar, message } from 'antd';
 import { LogoutOutlined, DownOutlined } from '@ant-design/icons';
 import storage from '@/utils/storage';
+import _ from 'lodash';
 
 const { Header, Footer, Sider, Content } = Layout;
-
 
 interface IProps extends StateProps, ConnectProps {
 }
@@ -27,11 +27,12 @@ class Main extends React.Component<IProps> {
       type: 'loginManagement/setLoginUserInfoReducer',
       userInfo
     });
-    if (isLogin) {
+    if (isLogin && !_.isEmpty(this.props.loginManagement.userInfo)) {
       router.push('/storeManagement');
-    } else {
-      router.push('/login');
+      return;
     }
+    message.warning('请登录');
+    router.push('/login');
   }
 
   toggle = () => {
@@ -45,22 +46,16 @@ class Main extends React.Component<IProps> {
     router.push('/login');
   }
 
-  render() {
+  renderHeaderContent = () => {
     const userMenu = (
       <Menu className="menu">
         <Menu.Item onClick={this.userLogoff}><LogoutOutlined />退出登录</Menu.Item>
       </Menu>
     );
     return (
-      <div className="main">
-        <Layout>
-          <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
-            <LeftMenu />
-          </Sider>
-          <Layout className="site-layout">
-            <Header className="site-layout-header" style={{ padding: 0 }}>
-              <div className="right">
-                <Dropdown overlay={userMenu} >
+      <Header className="site-layout-header" style={{ padding: 0 }}>
+        <div className="right">
+          <Dropdown overlay={userMenu} >
                   <span className="action" >
                     <Avatar
                       size="small"
@@ -69,9 +64,21 @@ class Main extends React.Component<IProps> {
                     />
                     <span>{ this.props.loginManagement.userInfo.nickname } <DownOutlined /></span>
                   </span>
-                </Dropdown>
-              </div>
-            </Header>
+          </Dropdown>
+        </div>
+      </Header>
+    );
+  }
+
+  render() {
+    return (
+      <div className="main">
+        <Layout>
+          <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
+            <LeftMenu />
+          </Sider>
+          <Layout className="site-layout">
+            { !_.isEmpty(this.props.loginManagement.userInfo) && this.renderHeaderContent() }
             <Content className="site-layout-content">
               { this.props.children }
             </Content>
@@ -89,5 +96,3 @@ const mapStateToProps = (state: ConnectState) => ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 
 export default connect(mapStateToProps)(Main);
-
-// export default connect()(Main);
