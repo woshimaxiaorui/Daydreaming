@@ -11,9 +11,11 @@ const routes = [
       },
       {
         path: '/',
+        Routes: ['src/pages/Authorized'],
         component: '../pages/index',
         routes: [
-          { path: '/',
+          {
+            path: '/',
             component: '../pages/component/content/index',
             routes: [
               {

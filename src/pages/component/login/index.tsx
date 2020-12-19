@@ -19,7 +19,7 @@ class Login extends React.Component<IProps, IState> {
   state = {
     submitting: false,
     checkResult: false
-  }
+  };
 
   loginClick = (values: any) => {
     this.setState({
@@ -27,7 +27,7 @@ class Login extends React.Component<IProps, IState> {
     }, async () => {
       const params = {
         ...values
-      }
+      };
       const submitRes = await this.props.dispatch({
         type: 'loginManagement/loginCheckEffect',
         params
@@ -42,7 +42,7 @@ class Login extends React.Component<IProps, IState> {
       });
     });
 
-  }
+  };
 
   render() {
     const { checkResult } = this.state;
@@ -72,7 +72,7 @@ class Login extends React.Component<IProps, IState> {
               <Input
                 size="large"
                 prefix={<UserOutlined className="site-form-item-icon" />}
-                placeholder="用户名：请输入用户名"
+                placeholder="请输入用户名"
               />
             </Form.Item>
             <Form.Item
@@ -83,7 +83,7 @@ class Login extends React.Component<IProps, IState> {
                 size="large"
                 prefix={<LockOutlined className="site-form-item-icon" />}
                 type="password"
-                placeholder="密码：请输入密码"
+                placeholder="请输入密码"
               />
             </Form.Item>
             <Form.Item>
@@ -99,4 +99,3 @@ class Login extends React.Component<IProps, IState> {
 }
 
 export default connect()(Login);
-// export default Login;

@@ -20,21 +20,6 @@ class Main extends React.Component<IProps> {
     collapsed: false,
   };
 
-  async componentDidMount() {
-    const { isLogin, userInfo } = await useAuth();
-
-    await this.props.dispatch({
-      type: 'loginManagement/setLoginUserInfoReducer',
-      userInfo
-    });
-    if (isLogin && !_.isEmpty(this.props.loginManagement.userInfo)) {
-      router.push('/storeManagement');
-      return;
-    }
-    message.warning('请登录');
-    router.push('/login');
-  }
-
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -44,7 +29,7 @@ class Main extends React.Component<IProps> {
   userLogoff = () => {
     storage.removeUserToken();
     router.push('/login');
-  }
+  };
 
   renderHeaderContent = () => {
     const userMenu = (
