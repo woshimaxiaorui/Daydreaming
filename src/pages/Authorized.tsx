@@ -24,7 +24,6 @@ export class Authorized extends React.Component<ConnectProps & StateProps, IStat
     this.setState({
       isLogin
     }, () => {
-      console.log('??=>', isLogin);
       if (isLogin && !_.isEmpty(this.props.loginManagement.userInfo)) {
         router.push('/storeManagement');
         return;

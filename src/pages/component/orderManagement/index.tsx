@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
-import { Space, Table } from 'antd';
+import { Space, Table, Spin, Card,  Button, Row, Col } from 'antd';
 import { dateAdd } from '@/utils/func';
 
 import './index.scss';
@@ -93,21 +93,74 @@ class OrderManagement extends React.Component<IProps, IState> {
     this.setState({
       createOrderModalStatus,
       deskId: _.isUndefined(deskId) ? '0' : deskId
-  })
-  }
+    })
+  };
 
   editOrderModalStatusSwitch = (editOrderModalStatus: boolean, currentData?: IOrderTable) => {
     this.setState({
       editOrderModalStatus,
       currentData: _.isUndefined(currentData) ? {} as IOrderTable : currentData
     })
-  }
+  };
 
   settlementOrderModalStatusSwitch = (settlementOrderModalStatus: boolean, currentData?: IOrderTable) => {
     this.setState({
       settlementOrderModalStatus,
       currentData: _.isUndefined(currentData) ? {} as IOrderTable : currentData
     })
+  };
+
+  renderOverTime = (deskItem: IDeskTable) => {
+    const orderTime = _.isEmpty(deskItem.orderInfo) ? '' : deskItem.orderInfo.orderTime;
+    const scriptGameTime = deskItem.orderInfo.scriptInfo.gameTime;
+    const dateTime = dateAdd('h',scriptGameTime,orderTime);
+    return (
+      <div className="desk-info">
+        <span>预计结束时间:</span>
+        <span>{dateTime}</span>
+      </div>
+    )
+  };
+
+  renderCard = (deskItem: IDeskTable) => {
+    return (
+      <Card
+        className="order-card"
+        title={deskItem.title}
+        cover={
+          <img
+            alt="example"
+            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          />
+        }
+      >
+        {
+          !_.isEmpty(deskItem.orderInfo) ? (
+            <>
+              <div className="desk-info">
+                <span>剧本:</span>
+                <span>{deskItem.orderInfo?.scriptInfo?.title ?? ''}</span>
+              </div>
+              <div className="desk-info">
+                <span>开始时间:</span>
+                <span>{deskItem.orderInfo.orderTime}</span>
+              </div>
+              {this.renderOverTime(deskItem)}
+            </>
+          ) : <div className="desk-info-empty">欢迎使用</div>
+        }
+        <div className="action-area">
+          {
+            _.isEmpty(deskItem.orderInfo) ? (<Space size="middle">
+              <Button type="primary" onClick={ () => this.createOrderModalStatusSwitch(true, deskItem.id) }>开台</Button>
+            </Space>) : (<Space size="middle">
+              <Button type="primary" onClick={ () => this.editOrderModalStatusSwitch(true, deskItem.orderInfo) }>修改</Button>
+              <Button type="primary" onClick={ () => this.settlementOrderModalStatusSwitch(true, deskItem.orderInfo) }>结算</Button>
+            </Space>)
+          }
+        </div>
+      </Card>
+    )
   }
 
   render() {
@@ -117,11 +170,15 @@ class OrderManagement extends React.Component<IProps, IState> {
           <span></span>
           {/*<Button type="primary">创建</Button>*/}
         </div>
-        <div className="order-table">
-          <Table
-            dataSource={this.props.deskList}
-            columns={this.columns} />
-        </div>
+        <Spin spinning={_.isEmpty(this.props.deskList)} >
+          <div className="order-content">
+              {
+                _.map(this.props.deskList, deskItem => (
+                  this.renderCard(deskItem)
+                ))
+              }
+          </div>
+        </Spin>
         {
           this.state.createOrderModalStatus && <AddOrderModel visible={this.state.createOrderModalStatus} onShow={this.createOrderModalStatusSwitch} deskId={this.state.deskId} />
         }

@@ -6,6 +6,34 @@
       display: flex;
       justify-content: space-between;
     }
+    .order-content {
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      padding: 0 50px 0 100px;
+      .order-card {
+        width: 300px;
+        margin: 0 22px 20px 0;
+        .desk-info-empty {
+          margin-bottom: 15px;
+          height: 94px;
+        }
+        .desk-info {
+          margin-bottom: 15px;
+          span {
+            margin-right: 10px;
+          }
+        }
+        .action-area {
+          margin: 0 auto;
+          padding: 10px 5px 0;
+          border-top: 1px solid #f4f4f4;
+        }
+      }
+      //.order-card:nth-child(3n+3) {
+      //  margin-right: 0;
+      //}
+    }
     .order-card {
       padding: 0 10px 10px 10px;
     }

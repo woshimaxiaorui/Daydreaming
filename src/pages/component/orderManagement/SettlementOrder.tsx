@@ -149,7 +149,6 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
           remark: values.remark,
           orderDetailList: this.state.orderDetailList
         };
-        console.log('params',params);
         return;
       }
     });
