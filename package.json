@@ -10,6 +10,7 @@
   "dependencies": {
     "antd": "^4.9.4",
     "lodash": "^4.17.20",
+    "moment": "^2.29.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "umi-request": "^1.2.19"

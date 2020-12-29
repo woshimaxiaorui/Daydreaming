@@ -17,6 +17,7 @@ export interface IPlayerManagementModelType {
     getPlayerManagementListEffect: Effect;
     addPlayerManagementEffect: Effect;
     editPlayerManagementEffect: Effect;
+    accountRechargeEffect: Effect;
   };
   reducers: {
     setPlayerListReducer: Reducer<IPlayerManagement>;
@@ -52,7 +53,7 @@ const partnerModel: IPlayerManagementModelType = {
         yield put({
           type: 'getPlayerManagementListEffect'
         });
-        return { userNameExists: true, playerNameExists: true }
+        return { phoneExists: true }
       }
       if (addRes.code === STATUS_CODE.CHECK_ERROR) {
         return {
@@ -76,6 +77,19 @@ const partnerModel: IPlayerManagementModelType = {
           phoneExists: editRes.data.phoneExists
         }
       }
+    },
+    *accountRechargeEffect({params}, { call, put }){
+      const res = yield call(playerManagementService.accountRechargeApi, params);
+      if(_.isEmpty(res)){
+        return;
+      }
+      if (res.code === STATUS_CODE.SUCCESS ) {
+        yield put({
+          type: 'getPlayerManagementListEffect'
+        });
+        return true;
+      }
+      return false;
     }
   },
   reducers: {

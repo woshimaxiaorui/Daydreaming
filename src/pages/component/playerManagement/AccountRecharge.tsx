@@ -1,9 +1,8 @@
 import React from 'react';
-import { Modal, Button, Form, Switch, Input, Select } from 'antd';
-import { IAddPlayerExists, IPlayerTable } from '@/pages/types/playerManagement';
+import { Modal, Button, Form, InputNumber, Input, message } from 'antd';
+import { IPlayerTable } from '@/pages/types/playerManagement';
 import _ from 'lodash';
 import { FormInstance } from 'antd/es/form';
-import { IAddStoreExists } from '@/pages/types/storeManagement';
 import { Dispatch } from 'dva';
 import { connect } from 'react-redux';
 
@@ -11,7 +10,7 @@ interface IProps {
   visible: boolean;
   currentData: IPlayerTable;
   dispatch: Dispatch;
-  onEditShow(visible: boolean): void;
+  onShow(visible: boolean): void;
 }
 
 const layout = {
@@ -19,25 +18,25 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 
-class EditPlayerModel extends React.Component<IProps> {
+class AccountRechargeModel extends React.Component<IProps> {
 
   formRef = React.createRef<FormInstance>();
 
   onSubmit = async (values: any) => {
-    const params = {...values, playerId: values.id};
-    const submitRes: IAddPlayerExists = await this.props.dispatch({
-      type: 'playerManagement/editPlayerManagementEffect',
-      params
-    });
-    if (!submitRes.phoneExists) {
-      // @ts-ignore
-      this.formRef.current.setFields([{
-        name: 'phone',
-        errors: ['该电话号码已存在']
-      }]);
+    if(!_.isNumber(values.rechargeAmount)){
       return;
     }
-    this.props.onEditShow(false);
+    const params = {...values, userId: values.id};
+    const submitRes = await this.props.dispatch({
+      type: 'playerManagement/accountRechargeEffect',
+      params
+    });
+    if (!submitRes) {
+      message.error('充值失败！');
+      return;
+    }
+    message.success('充值成功！');
+    this.props.onShow(false);
   };
 
   render() {
@@ -45,7 +44,7 @@ class EditPlayerModel extends React.Component<IProps> {
       ? {...this.props.currentData, sex: _.isEqual(this.props.currentData.sex, 0) ? '女' : '男'} : {};
     return (
       <Modal
-        title="修改玩家信息"
+        title="玩家信息"
         visible={this.props.visible}
         footer={null}
         closable={false}
@@ -60,54 +59,51 @@ class EditPlayerModel extends React.Component<IProps> {
           <Form.Item
             name="nickname"
             label="昵称"
-            rules={[
-              {
-                required: true,
-                message: '输入昵称!',
-              },
-            ]}
           >
-            <Input />
+            <Input disabled />
           </Form.Item>
           <Form.Item
             name="phone"
             label="手机号"
+          >
+            <Input disabled />
+          </Form.Item>
+          <Form.Item
+            name="accountBalance"
+            label="账户余额"
+          >
+            <Input disabled />
+          </Form.Item>
+          <Form.Item
+            name="voucherBalance"
+            label="代金卷余额"
+          >
+            <Input disabled />
+          </Form.Item>
+          <Form.Item
+            name="rechargeAmount"
+            label="充值金额"
             rules={[
               {
                 required: true,
-                message: '输入手机号!',
+                message: '请输入充值金额!',
               },
             ]}
           >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="sex"
-            label="性别"
-          >
-            <Select>
-              <Select.Option value="1">男</Select.Option>
-              <Select.Option value="0">女</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="remark"
-            label="备注"
-          >
-            <Input.TextArea/>
+            <InputNumber min={0} />
           </Form.Item>
           <div className="add-player-submit-button-area">
             <Button
               type="primary"
               htmlType="submit"
             >
-              修改
+              充值
             </Button>
-            <Button className="cancel" onClick={() => this.props.onEditShow(false)}>取消</Button>
+            <Button className="cancel" onClick={() => this.props.onShow(false)}>取消</Button>
           </div>
         </Form>
       </Modal>
     )
   }
 }
-export default connect()(EditPlayerModel);
+export default connect()(AccountRechargeModel);

@@ -6,6 +6,7 @@ import { Modal, Button, Form, Input, Select, Checkbox } from 'antd';
 import { IAddOrderResponse } from '@/pages/types/orderManagement';
 import { IUserTable } from '@/pages/types/userManagement';
 import { IOrderDetailTable } from '@/pages/types/orderDetailManagement';
+import { IPlayerTable } from '@/pages/types/playerManagement';
 
 const {Option} = Select;
 
@@ -35,7 +36,6 @@ class AddOrderModel extends React.Component<IProps, IState> {
     const scriptParams = {
       storeId: 1
     };
-
     await this.props.dispatch({
       type: 'scriptManagement/getScriptManagementListEffect',
       params: scriptParams
@@ -44,7 +44,6 @@ class AddOrderModel extends React.Component<IProps, IState> {
     const userParams = {
       storeId: 1
     };
-
     await this.props.dispatch({
       type: 'userManagement/getUserManagementListEffect',
       params: userParams
@@ -62,14 +61,12 @@ class AddOrderModel extends React.Component<IProps, IState> {
     const userInfo: IUserTable = _.find(this.props.userList, user => user.id === userId) || {} as IUserTable;
     const tempOrderDetail: IOrderDetailTable = {
       tempId: userId,
+      userId,
       userInfo
     };
     const { orderDetailList } = this.state;
     this.setState({
       orderDetailList: _.uniqWith(_.compact([tempOrderDetail, ...orderDetailList]), _.isEqual)
-      // _.uniqWith(_.compact([tempOrderDetail, ...orderDetailList]),_.isEqual)
-    }, () => {
-      // console.log(`state.userList`, this.state.orderDetailList);
     });
   };
 
@@ -78,30 +75,19 @@ class AddOrderModel extends React.Component<IProps, IState> {
     const removedOrderDetailList = _.filter(tempOrderDetailList, (item: IOrderDetailTable) => orderDetail.tempId !== item.tempId )
     this.setState({
       orderDetailList: removedOrderDetailList
-    }, () => {
-      // console.log("removedOrderDetailList", this.state.orderDetailList);
     })
   }
 
   onSubmit = async (values: any) => {
-    const playerArr = _.map(values.playerItem, (value, prop) => ({
-      userId: value,
-      isPay: 0
-    }));
-    const userArr = _.map(values.userItem, (value, prop) => ({
-      userId: value,
-      isPay: 1
-    }));
-    const detailList = _.unionBy(playerArr, userArr, "userId");
-
     const params = {
       ...values,
       storeId: 1,
       deskId: this.props.deskId,
       orderOperatorId: 1,
-      detailList: detailList
+      detailList: this.state.orderDetailList
       //storeId,scriptId,deskId,hostId,orderOperatorId,remark,detailList
     };
+
     await this.props.dispatch({
       type: 'orderManagement/addOrderManagementEffect',
       params
@@ -154,16 +140,10 @@ class AddOrderModel extends React.Component<IProps, IState> {
           <Form.Item
             name="userItem"
             label="请选择用户"
-            rules={[
-              {
-                required: true,
-                message: '请选择用户!',
-              },
-            ]}
           >
             <Select placeholder="请选择用户" style={{ width: '100%' }} showSearch onChange={this.addStateUser}>
               {
-                _.map(this.props.userList, item => {
+                _.map(this.props.userList, (item: IUserTable) => {
                   const disabled = !_.isEmpty(_.find(this.state.orderDetailList, (orderDetailItem: IOrderDetailTable) => orderDetailItem?.tempId === item.id ));
                   return (
                     <Option key={item.id} disabled={disabled} value={`${item.id}`}>{item.phone}-{item.nickname}</Option>

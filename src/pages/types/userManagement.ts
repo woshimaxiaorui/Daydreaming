@@ -13,6 +13,8 @@ export interface IUserTable {
   sex: string;
   phone: string;
   remark: string;
+  accountBalance: number;
+  voucherBalance: number;
   id: string;
   key: string;
 }

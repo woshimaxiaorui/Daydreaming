@@ -2,7 +2,6 @@ import React from 'react';
 import _ from 'lodash';
 import { Menu } from 'antd';
 import { IMenu } from '@/pages/types/LeftMenuType';
-import { MailOutlined, AppstoreAddOutlined } from '@ant-design/icons';
 import router from 'umi/router';
 
 interface IState {
@@ -15,6 +14,10 @@ class LeftMenu extends React.Component<any, IState> {
       {
         menuTitle: '门店管理',
         menuPath: 'storeManagement'
+      },
+      {
+        menuTitle: '用户管理',
+        menuPath: 'userManagement'
       },
       {
         menuTitle: '玩家管理',
@@ -35,6 +38,14 @@ class LeftMenu extends React.Component<any, IState> {
       {
         menuTitle: '订单历史记录',
         menuPath: 'orderHistoryList'
+      },
+      {
+        menuTitle: '历史交易账单',
+        menuPath: 'accountStatisticsDayList'
+      },
+      {
+        menuTitle: '历史交易账单明细',
+        menuPath: 'accountList'
       },
     ]
   };

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
-import { Button, Form, Input, Modal, InputNumber } from 'antd';
+import { Button, Form, Input, Modal, InputNumber, message } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { IOrderTable } from '@/pages/types/orderManagement';
 import { IRoleTable } from '@/pages/types/roleManagement';
@@ -66,7 +66,7 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
   }
 
   onDiscountChange = async (value: number, detailItem: IOrderDetailTable) => {
-    if(!_.isNumber(value) || value > 100){
+    if(!_.isNumber(value)){
       return;
     }
     const { orderDetailList } = this.state;
@@ -143,13 +143,29 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
       okText: '确认',
       cancelText: '取消',
       onOk: async (e) => {
+        message.loading({ content: 'Loading...' });
+
         const params = {
           orderId: this.props.currentData.id,
           settlementOperatorId: 1,
           remark: values.remark,
           orderDetailList: this.state.orderDetailList
         };
-        return;
+
+        console.log('params',params);
+        // return;
+        const submitRes = await this.props.dispatch({
+          type: 'orderManagement/settlementOrderManagementEffect',
+          params
+        });
+        if(submitRes){
+          message.destroy();
+          message.success({ content: '结算成功!', duration: 2 });
+          this.props.onShow(false);
+          return;
+        }
+        message.destroy();
+        message.error({ content: '结算失败!', duration: 2 });
       }
     });
   }
@@ -239,7 +255,6 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
                             <InputNumber
                               defaultValue={100}
                               min={0}
-                              max={100}
                               formatter={value => `${value}%`}
                               parser={value => value.replace('%', '')}
                               size={'small'} onChange={(value) => this.onDiscountChange(Number(value), item)} />

@@ -23,6 +23,10 @@ const routes = [
                 component: '../pages/component/storeManagement/index'
               },
               {
+                path: '/userManagement',
+                component: '../pages/component/userManagement/index'
+              },
+              {
                 path: '/playerManagement',
                 component: '../pages/component/playerManagement/index'
               },
@@ -41,6 +45,14 @@ const routes = [
               {
                 path: '/orderHistoryList',
                 component: '../pages/component/orderManagement/orderHistoryList'
+              },
+              {
+                path: '/accountStatisticsDayList',
+                component: '../pages/component/accountStatistics/AccountStatisticsDayList'
+              },
+              {
+                path: '/accountList',
+                component: '../pages/component/accountStatistics/AccountList'
               },
               {
                 component: '../pages/component/404'

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
-import { Modal, Button, Form, Input, Select, Checkbox } from 'antd';
+import { Modal, Button, Form, Input, Select, Checkbox, message } from 'antd';
 import { IOrderTable } from '@/pages/types/orderManagement';
 import { IUserTable } from '@/pages/types/userManagement';
 import { IOrderDetailTable } from '@/pages/types/orderDetailManagement';
@@ -33,12 +33,10 @@ class AddOrderModel extends React.Component<IProps, IState> {
   }
 
   async componentDidMount() {
-    /// orderDetailList
-    this.setState({
+    await this.setState({
       orderDetailList: [...getOrderDetailListForTable(this.props.currentData.detailList || [])]
     });
 
-    /// scriptList
     const scriptParams = {
       storeId: 1
     };
@@ -47,7 +45,6 @@ class AddOrderModel extends React.Component<IProps, IState> {
       params: scriptParams
     });
 
-    /// userList
     const userParams = {
       storeId: 1
     };
@@ -56,7 +53,6 @@ class AddOrderModel extends React.Component<IProps, IState> {
       params: userParams
     });
 
-    /// hostList
     const hostList = _.filter(this.props.userList, (user: IUserTable) => {
       return user.role !== '3';
     });
@@ -69,14 +65,12 @@ class AddOrderModel extends React.Component<IProps, IState> {
     const userInfo: IUserTable = _.find(this.props.userList, user => user.id === userId) || {} as IUserTable;
     const tempOrderDetail: IOrderDetailTable = {
       tempId: userId,
+      userId,
       userInfo
     };
     const { orderDetailList } = this.state;
     this.setState({
       orderDetailList: _.uniqWith(_.compact([tempOrderDetail, ...orderDetailList]), _.isEqual)
-      // _.uniqWith(_.compact([tempOrderDetail, ...orderDetailList]),_.isEqual)
-    }, () => {
-      // console.log(`state.userList`, this.state.orderDetailList);
     });
   };
 
@@ -85,35 +79,32 @@ class AddOrderModel extends React.Component<IProps, IState> {
     const removedOrderDetailList = _.filter(tempOrderDetailList, (item: IOrderDetailTable) => orderDetail.tempId !== item.tempId )
     this.setState({
       orderDetailList: removedOrderDetailList
-    }, () => {
-      // console.log("removedOrderDetailList", this.state.orderDetailList);
     })
   }
 
   onSubmit = async (values: any) => {
-    const playerArr = _.map(values.playerItem, (value, prop) => ({
-      userId: value,
-      isPay: 0
-    }));
-    const userArr = _.map(values.userItem, (value, prop) => ({
-      userId: value,
-      isPay: 1
-    }));
-    const detailList = _.unionBy(playerArr, userArr, "userId");
+    message.loading({ content: 'Loading...' });
 
     const params = {
       ...values,
+      orderId: this.props.currentData.id,
       storeId: 1,
       deskId: this.props.currentData.deskId,
-      orderOperatorId: 1,
-      detailList: detailList
+      detailList: this.state.orderDetailList
       //storeId,scriptId,deskId,orderOperatorId,remark,detailList
     };
-    await this.props.dispatch({
-      type: 'orderManagement/addOrderManagementEffect',
+    const submitRes = await this.props.dispatch({
+      type: 'orderManagement/editOrderManagementEffect',
       params
     });
-    this.props.onEditShow(false);
+    if(submitRes){
+      message.destroy();
+      message.success({ content: '更新成功!', duration: 2 });
+      this.props.onEditShow(false);
+      return;
+    }
+    message.destroy();
+    message.error({ content: '更新失败!', duration: 2 });
   };
 
   render() {
@@ -163,15 +154,9 @@ class AddOrderModel extends React.Component<IProps, IState> {
           <Form.Item
             name="userItem"
             label="请选择用户"
-            rules={[
-              {
-                required: true,
-                message: '请选择用户!',
-              },
-            ]}
           >
             <Select placeholder="请选择用户" style={{ width: '100%' }} showSearch onChange={this.addStateUser}>
-              {_.map(this.props.userList, item => {
+              {_.map(this.props.userList, (item: IUserTable) => {
                 const disabled = !_.isEmpty(_.find(this.state.orderDetailList, (orderDetailItem: IOrderDetailTable) => orderDetailItem?.tempId === item.id ));
                 return (
                   <Option key={item.id} disabled={disabled} value={`${item.id}`}>{item.phone}-{item.nickname}</Option>

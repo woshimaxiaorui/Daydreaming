@@ -45,8 +45,7 @@ class EditStoreModel extends React.Component<IProps> {
   };
 
   render() {
-    const initialValues = !_.isEmpty(this.props.currentEditData)
-      ? {...this.props.currentEditData, confirm: this.props.currentEditData.passWord} : {};
+    const initialValues = !_.isEmpty(this.props.currentEditData) ? { ...this.props.currentEditData } : {};
     const switchStatus = !_.isEmpty(this.props.currentEditData) ? this.props.currentEditData.status : false;
     return (
       <Modal

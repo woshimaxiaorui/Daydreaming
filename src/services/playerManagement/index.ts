@@ -15,7 +15,13 @@ export async function addPlayerManagementApi(params: IAddPlayerResponse) {
 }
 
 export async function editPlayerManagementApi(params: IAddPlayerResponse) {
-  return request.post('/service/user/edit-Player', {
+  return request.post('/service/user/edit-player', {
+    data: params
+  });
+}
+
+export async function accountRechargeApi(params: IPlayerResponse) {
+  return request.post('/service/user/account-recharge', {
     data: params
   });
 }

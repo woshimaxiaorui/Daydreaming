@@ -5,6 +5,9 @@ import { IAddOrderResponse, IOrderResponse, ISettlementOrderResponse, IOrderTabl
 import * as orderManagementService from '@/services/orderManagement';
 import { getOrderListForTable } from '@/utils/orderManagementUtils';
 import { STATUS_CODE } from '@/pages/constants';
+import { IUserResponse } from '@/pages/types/userManagement';
+import * as userManagementService from '@/services/userManagement';
+import { getUserListForTable } from '@/utils/userManagementUtils';
 
 export interface IOrderManagement {
   [key: string]: any;
@@ -51,6 +54,9 @@ const partnerModel: IOrderManagementModeType = {
       }
       if(addRes.code == STATUS_CODE.SUCCESS) {
         yield put({
+          type: 'getOrderManagementListEffect'
+        });
+        yield put({
           type: 'deskManagement/getOrderManagementDeskListEffect'
         });
         return true;
@@ -65,6 +71,9 @@ const partnerModel: IOrderManagementModeType = {
         yield put({
           type: 'getOrderManagementListEffect'
         });
+        yield put({
+          type: 'deskManagement/getOrderManagementDeskListEffect'
+        });
         return true;
       }
     },
@@ -74,6 +83,9 @@ const partnerModel: IOrderManagementModeType = {
         return;
       }
       if(addRes.code == STATUS_CODE.SUCCESS) {
+        yield put({
+          type: 'getOrderManagementListEffect'
+        });
         yield put({
           type: 'deskManagement/getOrderManagementDeskListEffect'
         });

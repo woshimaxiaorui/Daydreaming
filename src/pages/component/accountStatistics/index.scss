@@ -1,0 +1,49 @@
+:global {
+  .account-management {
+    .account-search {
+      padding: 0 15px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .account-table {
+      padding: 0 10px 10px 10px;
+      .ant-table-content {
+        .ant-table-thead {
+          tr:nth-child(1) {
+            th:nth-child(2) {
+              text-align: right;
+            }
+            th:nth-child(3) {
+              text-align: right;
+            }
+            th:nth-child(4) {
+              text-align: center;
+            }
+          }
+        }
+        .ant-table-row {
+          td:nth-child(3) {
+            text-align: right;
+          }
+          td:nth-child(4) {
+            text-align: right;
+          }
+          td:nth-child(5) {
+            text-align: center;
+          }
+        }
+      }
+      .ant-table-summary {
+        color: red;
+      }
+    }
+  }
+  .add-account-submit-button-area {
+    display: flex;
+    justify-content: flex-end;
+    .cancel {
+      margin-left: 10px;
+    }
+  }
+}

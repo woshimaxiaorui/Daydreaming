@@ -10,6 +10,7 @@ import { IDeskManagementState } from '@/models/deskManagement';
 import { IUserManagementState } from '@/models/userManagement';
 import { IOrderManagementState } from '@/models/orderManagement';
 import { ILoginUserManagementState } from '@/models/loginManagement';
+import { IAccountStatisticsState } from '@/models/accountStatistics';
 // import { IPartnerState } from '@/models/partner/partner-model';
 
 export type Effect = (
@@ -50,6 +51,7 @@ export interface ConnectState {
   deskManagement: IDeskManagementState;
   orderManagement: IOrderManagementState;
   loginManagement: ILoginUserManagementState;
+  accountStatistics: IAccountStatisticsState;
 }
 
 export interface Route {

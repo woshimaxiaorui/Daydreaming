@@ -13,10 +13,11 @@ import SettlementOrderModel from '@/pages/component/orderManagement/SettlementOr
 import { IOrderTable } from '@/pages/types/orderManagement';
 
 interface IProps extends StateProps, ConnectProps {
-  deskList: IDeskTable[];
+  deskOrderList: IDeskTable[];
 }
 
 interface IState {
+  dataLoading: boolean;
   createOrderModalStatus: boolean;
   editOrderModalStatus: boolean;
   settlementOrderModalStatus: boolean;
@@ -26,6 +27,7 @@ interface IState {
 
 class OrderManagement extends React.Component<IProps, IState> {
   state = {
+    dataLoading: true,
     createOrderModalStatus: false,
     editOrderModalStatus: false,
     settlementOrderModalStatus: false,
@@ -83,10 +85,13 @@ class OrderManagement extends React.Component<IProps, IState> {
     }
   ];
 
-  componentDidMount() {
-    this.props.dispatch({
+  async componentDidMount() {
+    await this.props.dispatch({
       type: 'deskManagement/getOrderManagementDeskListEffect'
     });
+    this.setState({
+      dataLoading: false
+    })
   }
 
   createOrderModalStatusSwitch = (createOrderModalStatus: boolean, deskId?: string) => {
@@ -127,6 +132,7 @@ class OrderManagement extends React.Component<IProps, IState> {
       <Card
         className="order-card"
         title={deskItem.title}
+        loading={this.state.dataLoading}
         cover={
           <img
             alt="example"
@@ -170,10 +176,10 @@ class OrderManagement extends React.Component<IProps, IState> {
           <span></span>
           {/*<Button type="primary">创建</Button>*/}
         </div>
-        <Spin spinning={_.isEmpty(this.props.deskList)} >
+        <Spin spinning={_.isEmpty(this.props.deskOrderList)} >
           <div className="order-content">
               {
-                _.map(this.props.deskList, deskItem => (
+                _.map(this.props.deskOrderList, deskItem => (
                   this.renderCard(deskItem)
                 ))
               }
@@ -194,7 +200,7 @@ class OrderManagement extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: ConnectState) => ({
-  deskList: state.deskManagement.deskList
+  deskOrderList: state.deskManagement.deskOrderList
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 
