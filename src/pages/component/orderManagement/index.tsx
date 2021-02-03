@@ -2,27 +2,28 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
-import { Space, Table, Spin, Card,  Button, Row, Col } from 'antd';
-import { dateAdd } from '@/utils/func';
-
+import { Space, Spin, Card,  Button } from 'antd';
+import { getPaginationParams, getRandomuserParams } from '@/utils/func';
 import './index.scss';
 import { IDeskTable } from '@/pages/types/deskManagement';
 import AddOrderModel from '@/pages/component/orderManagement/AddOrder';
 import EditOrderModel from '@/pages/component/orderManagement/EditOrder';
 import SettlementOrderModel from '@/pages/component/orderManagement/SettlementOrder';
 import { IOrderTable } from '@/pages/types/orderManagement';
+import { IPagination } from '@/pages/types/pagination';
 
 interface IProps extends StateProps, ConnectProps {
   deskOrderList: IDeskTable[];
 }
 
 interface IState {
-  dataLoading: boolean;
   createOrderModalStatus: boolean;
   editOrderModalStatus: boolean;
   settlementOrderModalStatus: boolean;
   currentData: IOrderTable;
   deskId: string;
+  pagination: IPagination;
+  formValues: any;
 };
 
 class OrderManagement extends React.Component<IProps, IState> {
@@ -32,7 +33,12 @@ class OrderManagement extends React.Component<IProps, IState> {
     editOrderModalStatus: false,
     settlementOrderModalStatus: false,
     currentData: Object.create(null),
-    deskId: '0'
+    deskId: '0',
+    pagination: {
+      current: 1,
+      pageSize: 100
+    },
+    formValues: Object.create(null)
   };
 
   columns = [
@@ -50,18 +56,6 @@ class OrderManagement extends React.Component<IProps, IState> {
       title: '开始时间',
       key: 'orderTime',
       render: (record: any) => _.isEmpty(record.orderInfo) ? '' : record.orderInfo.orderTime
-    },
-    {
-      title: '预计结束时间',
-      key: 'orderTime',
-      render: (record: any) => {
-        const orderTime = _.isEmpty(record.orderInfo) ? '' : record.orderInfo.orderTime;
-        const scriptGameTime: number = _.isEmpty(record.orderInfo) || _.isEmpty(record.orderInfo.scriptInfo) ? '' : record.orderInfo.scriptInfo.gameTime;
-        let dateTime = dateAdd('h',scriptGameTime,orderTime);
-        return(
-          dateTime
-        )
-      }
     },
     {
       title: '操作',
@@ -86,12 +80,21 @@ class OrderManagement extends React.Component<IProps, IState> {
   ];
 
   async componentDidMount() {
-    await this.props.dispatch({
-      type: 'deskManagement/getOrderManagementDeskListEffect'
+    await this.getListData({
+      storeId: this.props.loginUserInfo.storeId,
+      pagination: {
+        ...this.state.pagination
+      }
     });
-    this.setState({
-      dataLoading: false
-    })
+  }
+
+  getListData = async (params: any = {}) => {
+    const requestParams = getRandomuserParams(params);
+    await this.props.dispatch({
+      type: 'deskManagement/getOrderManagementDeskListEffect',
+      params: requestParams
+    });
+    await this.setState(getPaginationParams(params,params.pagination,this.props.deskOrderDataCount));
   }
 
   createOrderModalStatusSwitch = (createOrderModalStatus: boolean, deskId?: string) => {
@@ -115,24 +118,12 @@ class OrderManagement extends React.Component<IProps, IState> {
     })
   };
 
-  renderOverTime = (deskItem: IDeskTable) => {
-    const orderTime = _.isEmpty(deskItem.orderInfo) ? '' : deskItem.orderInfo.orderTime;
-    const scriptGameTime = deskItem.orderInfo.scriptInfo.gameTime;
-    const dateTime = dateAdd('h',scriptGameTime,orderTime);
-    return (
-      <div className="desk-info">
-        <span>预计结束时间:</span>
-        <span>{dateTime}</span>
-      </div>
-    )
-  };
-
   renderCard = (deskItem: IDeskTable) => {
     return (
       <Card
+        key={deskItem.id}
         className="order-card"
         title={deskItem.title}
-        loading={this.state.dataLoading}
         cover={
           <img
             alt="example"
@@ -151,7 +142,6 @@ class OrderManagement extends React.Component<IProps, IState> {
                 <span>开始时间:</span>
                 <span>{deskItem.orderInfo.orderTime}</span>
               </div>
-              {this.renderOverTime(deskItem)}
             </>
           ) : <div className="desk-info-empty">欢迎使用</div>
         }
@@ -176,7 +166,7 @@ class OrderManagement extends React.Component<IProps, IState> {
           <span></span>
           {/*<Button type="primary">创建</Button>*/}
         </div>
-        <Spin spinning={_.isEmpty(this.props.deskOrderList)} >
+        <Spin tip="Loading..." spinning={this.props.loading}>
           <div className="order-content">
               {
                 _.map(this.props.deskOrderList, deskItem => (
@@ -200,7 +190,10 @@ class OrderManagement extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: ConnectState) => ({
-  deskOrderList: state.deskManagement.deskOrderList
+  loginUserInfo: state.loginManagement.userInfo,
+  deskOrderList: state.deskManagement.deskOrderList,
+  deskOrderDataCount: state.deskManagement.dataCount,
+  loading: state.loading.global
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 

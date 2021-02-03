@@ -13,7 +13,9 @@ export interface IStoreTable {
 }
 
 export interface IStoreResponse extends IResponse {
-  data: IStoreTable[]
+  data: IStoreTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 export interface IAddStoreResponse extends IResponse {

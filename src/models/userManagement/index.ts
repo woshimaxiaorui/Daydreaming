@@ -4,7 +4,6 @@ import { Effect } from '@/models/connect';
 import * as userManagementService from '@/services/userManagement';
 import { IUserResponse, IUserTable } from '@/pages/types/UserManagement';
 import { getUserListForTable } from '@/utils/userManagementUtils';
-import { STATUS_CODE } from '@/pages/constants';
 
 export interface IUserManagement {
   [key: string]: any;
@@ -23,12 +22,16 @@ export interface IUserManagementModelType {
 
 export interface IUserManagementState {
   userList: IUserTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 const partnerModel: IUserManagementModelType = {
   namespace: 'userManagement',
   state: {
-    userList: []
+    userList: [],
+    dataCount: 0,
+    pageCount: 0,
   },
   effects: {
     *getUserManagementListEffect({ params }, { put , call }) {
@@ -38,13 +41,15 @@ const partnerModel: IUserManagementModelType = {
       }
       yield put({
         type: 'setUserListReducer',
-        userList: getUserListForTable(res.data)
+        userList: getUserListForTable(res.data),
+        dataCount: Number(res.dataCount),
+        pageCount: Number(res.pageCount)
       });
     }
   },
   reducers: {
-    setUserListReducer: (state, { userList }) => {
-      return { ...state, userList };
+    setUserListReducer: (state, { userList, dataCount, pageCount }) => {
+      return { ...state, userList, dataCount, pageCount };
     }
   }
 };

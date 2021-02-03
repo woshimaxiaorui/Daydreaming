@@ -1,18 +1,31 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
 import { connect } from 'react-redux';
-import { Dispatch } from 'dva';
+import { ConnectState, ConnectProps } from '@/models/connect';
+import { Form, Input, Button } from 'antd';
+import { IPagination } from '@/pages/types/pagination';
+import _ from 'lodash';
 
-interface IProps {
-  dispatch: Dispatch
+interface IProps extends StateProps, ConnectProps {
+  pagination: IPagination;
+  getListData: any;
 }
 
 class PlayerSearch extends React.Component<IProps> {
+
   onSearch = (values: any) => {
-    this.props.dispatch({
-      type: 'playerManagement/getPlayerManagementListEffect',
-      params: values
-    });
+    if(_.isUndefined(values)){
+      return;
+    }
+
+    const pagination = this.props.pagination;
+    pagination.current = 1;
+    const params = {
+      ...values,
+      pagination,
+      storeId: this.props.loginUserInfo.storeId
+    };
+
+    this.props.getListData(params);
   };
 
   render() {
@@ -43,4 +56,9 @@ class PlayerSearch extends React.Component<IProps> {
   }
 }
 
-export default connect()(PlayerSearch);
+const mapStateToProps = (state: ConnectState) => ({
+  loginUserInfo: state.loginManagement.userInfo
+});
+type StateProps = ReturnType<typeof mapStateToProps>;
+
+export default connect(mapStateToProps)(PlayerSearch);

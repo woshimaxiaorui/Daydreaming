@@ -3,7 +3,7 @@ import request from '@/utils/request';
 
 
 export async function getRoleManagementListApi(params: []): Promise<IRoleResponse>{
-  return request.get('/service/user/get-role-list',{
+  return request.get('/app/user/get-role-list',{
     params
   });
 }

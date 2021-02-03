@@ -1,11 +1,13 @@
 import React from 'react';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/lib/locale/zh_CN';
 
 class MainContent extends React.Component{
   render() {
     return (
-      <div>
+      <ConfigProvider locale={zhCN}>
         {this.props.children}
-      </div>
+      </ConfigProvider>
     )
   }
 }

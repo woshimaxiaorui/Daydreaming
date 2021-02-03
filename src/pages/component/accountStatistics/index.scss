@@ -8,32 +8,6 @@
     }
     .account-table {
       padding: 0 10px 10px 10px;
-      .ant-table-content {
-        .ant-table-thead {
-          tr:nth-child(1) {
-            th:nth-child(2) {
-              text-align: right;
-            }
-            th:nth-child(3) {
-              text-align: right;
-            }
-            th:nth-child(4) {
-              text-align: center;
-            }
-          }
-        }
-        .ant-table-row {
-          td:nth-child(3) {
-            text-align: right;
-          }
-          td:nth-child(4) {
-            text-align: right;
-          }
-          td:nth-child(5) {
-            text-align: center;
-          }
-        }
-      }
       .ant-table-summary {
         color: red;
       }

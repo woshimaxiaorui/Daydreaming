@@ -9,4 +9,6 @@ export interface IRoleTable {
 
 export interface IRoleResponse extends IResponse {
   data: IRoleTable[];
+  dataCount: number;
+  pageCount: number;
 }

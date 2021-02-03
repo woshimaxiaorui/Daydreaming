@@ -1,31 +1,37 @@
 import React from 'react';
-import { connect } from 'react-redux'
-import { Dispatch } from 'dva';
+import { connect } from 'react-redux';
+import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
-import { Button, Space, Table, Tag } from 'antd';
-
 import './index.scss';
+import { Button, Space, Table, Tag, Spin } from 'antd';
 import { IDeskTable } from '@/pages/types/deskManagement';
 import AddScriptModel from '@/pages/component/deskManagement/AddDesk';
 import EditScriptModel from '@/pages/component/deskManagement/EditDesk';
-import ConnectState from '@/models/connect';
+import { IPagination } from '@/pages/types/pagination';
+import { getPaginationParams, getRandomuserParams } from '@/utils/func';
 
-interface IProps extends StateProps, ConnectState {
+interface IProps extends StateProps, ConnectProps {
   deskList: IDeskTable[];
-  dispatch: Dispatch;
 }
 
 interface IState {
   createDeskModalStatus: boolean;
   editDeskModalStatus: boolean;
   currentEditData: IDeskTable;
+  pagination: IPagination;
+  formValues: any;
 }
 
 class DeskManagement extends React.Component<IProps, IState> {
   state = {
     createDeskModalStatus: false,
     editDeskModalStatus: false,
-    currentEditData: Object.create(null)
+    currentEditData: Object.create(null),
+    pagination: {
+      current: 1,
+      pageSize: 10
+    },
+    formValues: Object.create(null)
   };
 
   columns = [
@@ -58,9 +64,26 @@ class DeskManagement extends React.Component<IProps, IState> {
     }
   ];
 
-  componentDidMount() {
-    this.props.dispatch({
-      type: 'deskManagement/getDeskManagementListEffect'
+  async componentDidMount() {
+    await this.getListData({
+      storeId: this.props.loginUserInfo.storeId
+    });
+  }
+
+  getListData = async (params: any = {}) => {
+    const requestParams = getRandomuserParams(params);
+    delete requestParams.pagination;
+    await this.props.dispatch({
+      type: 'deskManagement/getDeskManagementListEffect',
+      params: requestParams
+    });
+    await this.setState(getPaginationParams(params,params.pagination,this.props.deskDataCount));
+  }
+
+  handleTableChange = async (pagination: any, filters: any, sorter: any) => {
+    await this.getListData({
+      ...this.state.formValues,
+      pagination
     });
   }
 
@@ -85,9 +108,14 @@ class DeskManagement extends React.Component<IProps, IState> {
           <Button type="primary" onClick={() => this.createDeskModalStatusSwitch(true)}>创建卓台</Button>
         </div>
         <div className="desk-table">
-          <Table
-            dataSource={this.props.deskList}
-            columns={this.columns} />
+          <Spin tip="Loading..." spinning={this.props.loading}>
+            <Table
+              dataSource={this.props.deskList}
+              columns={this.columns}
+              pagination={this.state.pagination}
+              onChange={this.handleTableChange}
+            />
+          </Spin>
         </div>
         <AddScriptModel visible={this.state.createDeskModalStatus} onShow={this.createDeskModalStatusSwitch}/>
         <EditScriptModel visible={this.state.editDeskModalStatus} currentEditData={this.state.currentEditData} onEditShow={this.editDeskModalStatusSwitch}/>
@@ -97,7 +125,10 @@ class DeskManagement extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: ConnectState) => ({
-  deskList: state.deskManagement.deskList
+  loginUserInfo: state.loginManagement.userInfo,
+  deskList: state.deskManagement.deskList,
+  deskDataCount: state.deskManagement.dataCount,
+  loading: state.loading.global
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 

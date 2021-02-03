@@ -11,6 +11,8 @@ import { IUserManagementState } from '@/models/userManagement';
 import { IOrderManagementState } from '@/models/orderManagement';
 import { ILoginUserManagementState } from '@/models/loginManagement';
 import { IAccountStatisticsState } from '@/models/accountStatistics';
+import { IIntegralStatisticsState } from '@/models/integralStatistics';
+import { IHostManagementState } from '@/models/userManagement/host';
 // import { IPartnerState } from '@/models/partner/partner-model';
 
 export type Effect = (
@@ -47,11 +49,13 @@ export interface ConnectState {
   storeManagement: IStoreManagementState;
   playerManagement: IPlayerManagementState;
   userManagement: IUserManagementState;
+  hostManagement: IHostManagementState;
   scriptManagement: IScriptManagementState;
   deskManagement: IDeskManagementState;
   orderManagement: IOrderManagementState;
   loginManagement: ILoginUserManagementState;
   accountStatistics: IAccountStatisticsState;
+  integralStatistics: IIntegralStatisticsState;
 }
 
 export interface Route {

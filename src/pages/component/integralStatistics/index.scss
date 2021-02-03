@@ -1,0 +1,56 @@
+:global {
+  .carousel-content {
+    background: #1890ff;
+    height: 400px;
+    color: white;
+    font-size: 18px;
+    font-family: initial;
+    .title-name {
+      font-size: 24px;
+      padding: 10px;
+    }
+    .title-list{
+      display: flex;
+      padding: 25px;
+      color: white;
+      span {
+        width: (100% / 5);
+        display: flex;
+        justify-content: center;
+      }
+    }
+    .value-list {
+      display: flex;
+      padding: 25px;
+      span {
+        width: (100% / 5);
+        display: flex;
+        justify-content: center;
+      }
+      a {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        color: white;
+      }
+    }
+    .value-list:nth-child(3) {
+      //color: gold;
+      a {
+        background: red;
+      }
+    }
+    .value-list:nth-child(4) {
+      //color: silver;
+      a {
+        background: orange;
+      }
+    }
+    .value-list:nth-child(5) {
+      //color: goldenrod;
+      a {
+        background: #FFFF00;
+      }
+    }
+  }
+}

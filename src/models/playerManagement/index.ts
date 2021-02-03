@@ -26,12 +26,16 @@ export interface IPlayerManagementModelType {
 
 export interface IPlayerManagementState {
   playerList: IPlayerTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 const partnerModel: IPlayerManagementModelType = {
   namespace: 'playerManagement',
   state: {
-    playerList: []
+    playerList: [],
+    dataCount: 0,
+    pageCount: 0,
   },
   effects: {
     *getPlayerManagementListEffect({ params }, { put , call }) {
@@ -39,10 +43,14 @@ const partnerModel: IPlayerManagementModelType = {
       if (_.isEmpty(res)) {
         return false;
       }
+      const playerList = getPlayerListForTable(res.data);
       yield put({
         type: 'setPlayerListReducer',
-        playerList: getPlayerListForTable(res.data)
+        playerList: playerList,
+        dataCount: Number(res.dataCount),
+        pageCount: Number(res.pageCount)
       });
+      return playerList;
     },
     *addPlayerManagementEffect({params}, { call, put }) {
       const addRes: IAddPlayerResponse = yield call(playerManagementService.addPlayerManagementApi, params);
@@ -93,8 +101,8 @@ const partnerModel: IPlayerManagementModelType = {
     }
   },
   reducers: {
-    setPlayerListReducer: (state, { playerList }) => {
-      return { ...state, playerList };
+    setPlayerListReducer: (state, { playerList, dataCount, pageCount }) => {
+      return { ...state, playerList, dataCount, pageCount };
     }
   }
 };

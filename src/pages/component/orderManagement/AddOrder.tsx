@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
-import { Modal, Button, Form, Input, Select, Checkbox } from 'antd';
-import { IAddOrderResponse } from '@/pages/types/orderManagement';
+import { Modal, Button, Form, Input, Select, Checkbox, Spin } from 'antd';
 import { IUserTable } from '@/pages/types/userManagement';
 import { IOrderDetailTable } from '@/pages/types/orderDetailManagement';
-import { IPlayerTable } from '@/pages/types/playerManagement';
+import { Editor } from 'react-draft-wysiwyg';
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const {Option} = Select;
 
@@ -17,8 +17,10 @@ interface IProps extends StateProps, ConnectProps {
 }
 
 interface IState {
-  hostList: IUserTable[];
   orderDetailList: IOrderDetailTable[];
+  playerDataList: IUserTable[];
+  playerValue: string;
+  playerFetching: boolean;
 }
 
 const layout = {
@@ -28,37 +30,64 @@ const layout = {
 
 class AddOrderModel extends React.Component<IProps, IState> {
   state = {
-    hostList: [],
-    orderDetailList: []
+    orderDetailList: [],
+    playerDataList: [],
+    playerValue: '',
+    playerFetching: false
   }
 
   async componentDidMount() {
+    // scriptList ajax
     const scriptParams = {
-      storeId: 1
+      storeId: this.props.loginUserInfo.storeId,
+      pageRecords: 1000
     };
     await this.props.dispatch({
       type: 'scriptManagement/getScriptManagementListEffect',
       params: scriptParams
     });
-
-    const userParams = {
-      storeId: 1
-    };
+    // hostList ajax
+    const hostParams = {
+      storeId: this.props.loginUserInfo.storeId,
+      pageRecords: 1000
+    }
     await this.props.dispatch({
-      type: 'userManagement/getUserManagementListEffect',
-      params: userParams
-    });
-
-    const hostList = _.filter(this.props.userList, (user: IUserTable) => {
-      return user.role !== '3';
-    });
-    this.setState({
-      hostList
+      type: 'hostManagement/getHostManagementListEffect',
+      params: hostParams
     });
   };
 
-  addStateUser = (userId: string) => {
-    const userInfo: IUserTable = _.find(this.props.userList, user => user.id === userId) || {} as IUserTable;
+  searchPlayer = async (value: any) => {
+    this.setState({ playerDataList: [], playerFetching: true });
+    const playerParams = {
+      storeId: this.props.loginUserInfo.storeId,
+      phone: value,
+      pageRecords: 1000
+    };
+    const playerDataList = await this.props.dispatch({
+      type: 'playerManagement/getPlayerManagementListEffect',
+      params: playerParams
+    });
+    await this.setState({
+      playerDataList
+    })
+    this.setState({
+      playerFetching: false
+    })
+  }
+
+  handleSearchPlayer = async (value: any) => {
+    if(value) {
+      //searchPlayerList ajax
+      //setState playerDataList
+      await this.searchPlayer(value);
+    } else {
+      this.setState({ playerDataList: [] })
+    }
+  }
+
+  handleAddStatePlayer = async (userId: string) => {
+    const userInfo: IUserTable = _.find(this.state.playerDataList, (user: IUserTable) => user.id === userId) || {} as IUserTable;
     const tempOrderDetail: IOrderDetailTable = {
       tempId: userId,
       userId,
@@ -81,9 +110,9 @@ class AddOrderModel extends React.Component<IProps, IState> {
   onSubmit = async (values: any) => {
     const params = {
       ...values,
-      storeId: 1,
+      storeId: this.props.loginUserInfo.storeId,
       deskId: this.props.deskId,
-      orderOperatorId: 1,
+      orderOperatorId: this.props.loginUserInfo.id,
       detailList: this.state.orderDetailList
       //storeId,scriptId,deskId,hostId,orderOperatorId,remark,detailList
     };
@@ -115,7 +144,7 @@ class AddOrderModel extends React.Component<IProps, IState> {
               },
             ]}
           >
-            <Select placeholder="请选择剧本">
+            <Select placeholder="请选择剧本" showSearch>
               {_.map(this.props.scriptList, item => (
                 <Option key={item.id} value={`${item.id}`}>{item.title}</Option>
               ))}
@@ -132,7 +161,7 @@ class AddOrderModel extends React.Component<IProps, IState> {
             ]}
           >
             <Select placeholder="请选择主持人" style={{ width: '100%' }} showSearch >
-              {_.map(this.state.hostList, (item: IUserTable) => (
+              {_.map(this.props.hostList, (item: IUserTable) => (
                 <Option key={item.id} value={`${item.id}`}>{item.phone}-{item.nickname}</Option>
               ))}
             </Select>
@@ -141,12 +170,20 @@ class AddOrderModel extends React.Component<IProps, IState> {
             name="userItem"
             label="请选择用户"
           >
-            <Select placeholder="请选择用户" style={{ width: '100%' }} showSearch onChange={this.addStateUser}>
+            <Select placeholder="请选择用户" style={{ width: '100%' }}
+                    showSearch
+                    defaultActiveFirstOption={false}
+                    showArrow={false}
+                    filterOption={false}
+                    onSearch={_.debounce(this.handleSearchPlayer,500)}
+                    onChange={this.handleAddStatePlayer}
+                    notFoundContent={this.state.playerFetching ? <Spin size="small" /> : null}
+             >
               {
-                _.map(this.props.userList, (item: IUserTable) => {
-                  const disabled = !_.isEmpty(_.find(this.state.orderDetailList, (orderDetailItem: IOrderDetailTable) => orderDetailItem?.tempId === item.id ));
+                _.map(this.state.playerDataList, (player: IUserTable) => {
+                  const disabled = !_.isEmpty(_.find(this.state.orderDetailList, (orderDetailItem: IOrderDetailTable) => orderDetailItem?.tempId === player.id))
                   return (
-                    <Option key={item.id} disabled={disabled} value={`${item.id}`}>{item.phone}-{item.nickname}</Option>
+                    <Option key={player.id} disabled={disabled} value={`${player.id}`}>{player.phone}-{player.nickname}</Option>
                   )
                 })
               }
@@ -176,6 +213,16 @@ class AddOrderModel extends React.Component<IProps, IState> {
           >
             <Input.TextArea/>
           </Form.Item>
+          <Form.Item>
+            <Editor
+              toolbarClassName="toolbarClassName"
+              wrapperClassName="wrapperClassName"
+              editorClassName="editorClassName"
+              localization={{
+                locale: 'zh',
+              }}
+            />
+          </Form.Item>
           <div className="add-order-submit-button-area">
             <Button
               type="primary"
@@ -191,8 +238,9 @@ class AddOrderModel extends React.Component<IProps, IState> {
   }
 }
 const mapStateToProps = (state: ConnectState) => ({
+  loginUserInfo: state.loginManagement.userInfo,
   scriptList: state.scriptManagement.scriptList,
-  userList: state.userManagement.userList
+  hostList: state.hostManagement.hostList,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 export default connect(mapStateToProps)(AddOrderModel);

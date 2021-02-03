@@ -8,17 +8,26 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "@re-editor/core": "^0.5.8",
     "antd": "^4.9.4",
+    "draft-js": "^0.11.7",
+    "draftjs-to-html": "^0.9.1",
+    "html-to-draftjs": "^1.5.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
+    "re-editor": "^0.5.8",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-draft-wysiwyg": "^1.14.5",
     "umi-request": "^1.2.19"
   },
   "devDependencies": {
+    "@types/draftjs-to-html": "^0.8.0",
+    "@types/html-to-draftjs": "^1.4.0",
     "@types/jest": "^23.3.12",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
+    "@types/react-draft-wysiwyg": "^1.13.1",
     "@types/react-test-renderer": "^16.0.3",
     "babel-eslint": "^9.0.0",
     "eslint": "^5.4.0",

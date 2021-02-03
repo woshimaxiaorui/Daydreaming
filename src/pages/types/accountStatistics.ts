@@ -2,6 +2,7 @@ import { IUserTable } from '@/pages/types/userManagement';
 import { IPromotionsTable } from '@/pages/types/promotionsManagement';
 import { IOrderTable } from '@/pages/types/orderManagement';
 import { IResponse } from '@/pages/types/public';
+import { IPaymentMethod } from '@/pages/types/paymentMethodManagement';
 
 export interface IAccountTable {
   userId?: string;
@@ -15,12 +16,16 @@ export interface IAccountTable {
   promotionsInfo?: IPromotionsTable;
   orderId?: string;
   orderInfo?: IOrderTable;
+  paymentMethodId: string;
+  paymentMethodInfo: IPaymentMethod;
   id?: string;
   key?: string;
 }
 
 export interface IAccountResponse extends IResponse {
-  data: IAccountTable[]
+  data: IAccountTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 export interface ISearchAccount {
@@ -40,4 +45,6 @@ export interface IAccountStatisticsTable {
 
 export interface IAccountStatisticsResponse extends IResponse {
   data: IAccountStatisticsTable[];
+  dataCount: number;
+  pageCount: number;
 }

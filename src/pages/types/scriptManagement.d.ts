@@ -17,6 +17,8 @@ export interface IScriptTable {
 
 export interface IScriptResponse extends IResponse {
   data: IScriptTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 export interface IAddScriptResponse extends IResponse {

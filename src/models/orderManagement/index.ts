@@ -29,12 +29,16 @@ export interface IOrderManagementModeType {
 
 export interface IOrderManagementState {
   orderList: IOrderTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 const partnerModel: IOrderManagementModeType = {
   namespace: 'orderManagement',
   state: {
-    orderList: []
+    orderList: [],
+    dataCount: 0,
+    pageCount: 0,
   },
   effects: {
     *getOrderManagementListEffect({ params },{ put, call }) {
@@ -44,7 +48,9 @@ const partnerModel: IOrderManagementModeType = {
       }
       yield put({
         type: 'setOrderListReducer',
-        orderList: getOrderListForTable(res.data)
+        orderList: getOrderListForTable(res.data),
+        dataCount: Number(res.dataCount),
+        pageCount: Number(res.pageCount)
       });
     },
     *addOrderManagementEffect({ params }, { put, call }) {
@@ -94,8 +100,8 @@ const partnerModel: IOrderManagementModeType = {
     },
   },
   reducers: {
-    setOrderListReducer: (state, { orderList }) => {
-      return { ...state, orderList };
+    setOrderListReducer: (state, { orderList, dataCount, pageCount }) => {
+      return { ...state, orderList, dataCount, pageCount };
     }
   }
 };

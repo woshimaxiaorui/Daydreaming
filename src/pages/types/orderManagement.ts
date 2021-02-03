@@ -28,6 +28,8 @@ export interface IOrderTable {
 
 export interface IOrderResponse extends IResponse {
   data: IOrderTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 export interface IAddOrderResponse extends IResponse {

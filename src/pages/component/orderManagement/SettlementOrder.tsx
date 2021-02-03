@@ -2,13 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
-import { Button, Form, Input, Modal, InputNumber, message } from 'antd';
+import { Button, Form, Input, Modal, InputNumber, message, Select } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { IOrderTable } from '@/pages/types/orderManagement';
 import { IRoleTable } from '@/pages/types/roleManagement';
 import { IOrderDetailTable } from '@/pages/types/orderDetailManagement';
 import { getOrderDetailListForTable } from '@/utils/orderDetailManagementUtils';
 import { IOrderDetailIntegralTable } from '@/pages/types/orderDetailIntegralManagement';
+const {Option} = Select;
 
 interface IProps extends StateProps, ConnectProps {
   visible: boolean;
@@ -147,13 +148,11 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
 
         const params = {
           orderId: this.props.currentData.id,
-          settlementOperatorId: 1,
+          settlementOperatorId: this.props.loginUserInfo.id,
           remark: values.remark,
           orderDetailList: this.state.orderDetailList
         };
-
-        console.log('params',params);
-        // return;
+        console.log('orderDetailList',this.state.orderDetailList);
         const submitRes = await this.props.dispatch({
           type: 'orderManagement/settlementOrderManagementEffect',
           params
@@ -225,10 +224,11 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
               {
                 _.map(this.state.roleList, (roleItem: IRoleTable) => {
                   return (
-                    <span key={roleItem.id}>{roleItem.title}</span>
+                    <span key={roleItem.id}>{roleItem.title}积分</span>
                   )
                 })
               }
+              <span>账户总余额</span>
               <span>折扣</span>
               <span>付款金额</span>
             </div>
@@ -250,6 +250,9 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
                             )
                           })
                         }
+                        <span>
+                          { (Number(item.userInfo?.accountBalance) + Number(item.userInfo?.voucherBalance)).toFixed(2) }
+                        </span>
                         <span>
                           <Form.Item>
                             <InputNumber
@@ -292,7 +295,7 @@ class SettlementOrderModel extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: ConnectState) => ({
-  // scriptList: state.scriptManagement.scriptList
+  loginUserInfo: state.loginManagement.userInfo,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 export default connect(mapStateToProps)(SettlementOrderModel);

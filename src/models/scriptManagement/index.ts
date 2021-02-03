@@ -25,12 +25,16 @@ export interface IScriptManagementModeType {
 
 export interface IScriptManagementState {
   scriptList: IScriptTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 const partnerModel: IScriptManagementModeType = {
   namespace: 'scriptManagement',
   state: {
-    scriptList: []
+    scriptList: [],
+    dataCount: 0,
+    pageCount: 0,
   },
   effects: {
     *getScriptManagementListEffect({ params },{ put, call }) {
@@ -40,7 +44,9 @@ const partnerModel: IScriptManagementModeType = {
       }
       yield put({
         type: 'setScriptListReducer',
-        scriptList: getScriptListForTable(res.data)
+        scriptList: getScriptListForTable(res.data),
+        dataCount: Number(res.dataCount),
+        pageCount: Number(res.pageCount)
       });
     },
     *addScriptManagementEffect({ params }, { put, call }) {
@@ -69,8 +75,8 @@ const partnerModel: IScriptManagementModeType = {
     }
   },
   reducers: {
-    setScriptListReducer: (state, { scriptList }) => {
-      return { ...state, scriptList };
+    setScriptListReducer: (state, { scriptList, dataCount, pageCount }) => {
+      return { ...state, scriptList, dataCount, pageCount };
     }
   }
 };

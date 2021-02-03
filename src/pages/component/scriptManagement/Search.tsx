@@ -1,29 +1,32 @@
 import React from 'react';
-import { Form, Input, Button, Select, InputNumber } from 'antd';
 import { connect } from 'react-redux';
-import { Dispatch } from 'dva';
+import { ConnectState, ConnectProps } from '@/models/connect';
+import { Form, Input, Button, Select, InputNumber } from 'antd';
 import { FormInstance } from 'antd/es/form';
 import _ from 'lodash';
+import { IPagination } from '@/pages/types/pagination';
 const { Option } = Select;
 
-interface IProps {
-  dispatch: Dispatch;
+interface IProps extends StateProps, ConnectProps {
+  pagination: IPagination;
+  getListData: any;
 }
 
 class ScriptSearch extends React.Component<IProps> {
   formRef = React.createRef<FormInstance>();
   onSearch = (values: any) => {
+    if(_.isUndefined(values)) {
+      return;
+    }
+    const pagination = this.props.pagination;
+    pagination.current = 1;
     const params = {
-      storeId: 1,
-      title: values.title,
-      type: values.type,
-      applicableNumber: values.applicableNumber,
-      isAdapt: values.isAdapt
+      ...values,
+      pagination,
+      storeId: this.props.loginUserInfo.storeId,
     };
-    this.props.dispatch({
-      type: 'scriptManagement/getScriptManagementListEffect',
-      params
-    });
+
+    this.props.getListData(params);
   };
   onClearAll = () => {
     if(!_.isEmpty(this.formRef.current)){
@@ -76,4 +79,9 @@ class ScriptSearch extends React.Component<IProps> {
   }
 }
 
-export default connect()(ScriptSearch);
+const mapStateToProps = (state: ConnectState) => ({
+  loginUserInfo: state.loginManagement.userInfo
+});
+type StateProps = ReturnType<typeof mapStateToProps>;
+
+export default connect(mapStateToProps)(ScriptSearch);

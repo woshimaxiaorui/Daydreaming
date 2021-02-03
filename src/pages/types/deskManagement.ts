@@ -15,6 +15,8 @@ export interface IDeskTable {
 
 export interface IDeskResponse extends IResponse {
   data: IDeskTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 export interface IAddDeskResponse extends IResponse {

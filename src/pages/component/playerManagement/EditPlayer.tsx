@@ -1,11 +1,13 @@
 import React from 'react';
-import { Modal, Button, Form, Switch, Input, Select } from 'antd';
+import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
 import { IAddPlayerExists, IPlayerTable } from '@/pages/types/playerManagement';
 import _ from 'lodash';
 import { FormInstance } from 'antd/es/form';
-import { IAddStoreExists } from '@/pages/types/storeManagement';
 import { Dispatch } from 'dva';
 import { connect } from 'react-redux';
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+import moment from 'moment';
 
 interface IProps {
   visible: boolean;
@@ -14,6 +16,7 @@ interface IProps {
   onEditShow(visible: boolean): void;
 }
 
+const dateFormat = 'YYYY-MM-DD';
 const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
@@ -24,7 +27,11 @@ class EditPlayerModel extends React.Component<IProps> {
   formRef = React.createRef<FormInstance>();
 
   onSubmit = async (values: any) => {
-    const params = {...values, playerId: values.id};
+    const params = {
+      ...values,
+      playerId: values.id,
+      birthday:values.birthday.format('YYYY-MM-DD')
+    };
     const submitRes: IAddPlayerExists = await this.props.dispatch({
       type: 'playerManagement/editPlayerManagementEffect',
       params
@@ -42,7 +49,11 @@ class EditPlayerModel extends React.Component<IProps> {
 
   render() {
     const initialValues = !_.isEmpty(this.props.currentData)
-      ? {...this.props.currentData, sex: _.isEqual(this.props.currentData.sex, 0) ? '女' : '男'} : {};
+      ? {
+          ...this.props.currentData,
+          sex: _.isEqual(this.props.currentData.sex, 0) ? '女' : '男',
+          birthday: this.props.currentData.birthday.length == 0 ? '' : moment(this.props.currentData.birthday, dateFormat)
+      } : {};
     return (
       <Modal
         title="修改玩家信息"
@@ -89,6 +100,12 @@ class EditPlayerModel extends React.Component<IProps> {
               <Select.Option value="1">男</Select.Option>
               <Select.Option value="0">女</Select.Option>
             </Select>
+          </Form.Item>
+          <Form.Item
+            name="birthday"
+            label="生日"
+          >
+            <DatePicker locale={locale} format={dateFormat} />
           </Form.Item>
           <Form.Item
             name="remark"

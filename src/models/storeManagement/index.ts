@@ -25,12 +25,16 @@ export interface IStoreManagementModelType {
 
 export interface IStoreManagementState {
   storeList: IStoreTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 const partnerModel: IStoreManagementModelType = {
   namespace: 'storeManagement',
   state: {
-    storeList: []
+    storeList: [],
+    dataCount: 0,
+    pageCount: 0,
   },
   effects: {
     *getStoreManagementListEffect({ params }, { put , call }) {
@@ -40,7 +44,9 @@ const partnerModel: IStoreManagementModelType = {
       }
       yield put({
         type: 'setStoreListReducer',
-        storeList: getStoreListForTable(res.data)
+        storeList: getStoreListForTable(res.data),
+        dataCount: Number(res.dataCount),
+        pageCount: Number(res.pageCount)
       });
     },
     *addStoreManagementEffect({params}, { call, put }) {
@@ -96,8 +102,8 @@ const partnerModel: IStoreManagementModelType = {
     // }
   },
   reducers: {
-    setStoreListReducer: (state, { storeList }) => {
-      return { ...state, storeList };
+    setStoreListReducer: (state, { storeList, dataCount, pageCount }) => {
+      return { ...state, storeList, dataCount, pageCount };
     }
   }
 };

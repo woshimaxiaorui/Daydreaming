@@ -9,18 +9,20 @@ import { IStoreTable } from '@/pages/types/storeManagement';
 import AddStoreModel from '@/pages/component/storeManagement/AddStore';
 import EditStoreModel from '@/pages/component/storeManagement/EditStore';
 
+interface IProps extends StateProps, ConnectProps {
+  storeList: IStoreTable[];
+}
+
 interface IState {
+  dataLoading: boolean;
   createStoreModalStatus: boolean;
   editStoreModalStatus: boolean;
   currentEditData: IStoreTable;
 }
 
-interface IProps extends StateProps, ConnectProps {
-  storeList: IStoreTable[];
-}
-
 class StoreManagement extends React.Component<IProps, IState> {
   state = {
+    dataLoading: true,
     createStoreModalStatus: false,
     editStoreModalStatus: false,
     currentEditData: Object.create(null)
@@ -86,11 +88,13 @@ class StoreManagement extends React.Component<IProps, IState> {
       )
     }
   ];
-  componentDidMount() {
-    this.props.dispatch({
+  async componentDidMount() {
+    await this.props.dispatch({
       type: 'storeManagement/getStoreManagementListEffect'
     });
-
+    this.setState({
+      dataLoading: false
+    });
   }
 
   createStoreModalStatusSwitch = (createStoreModalStatus: boolean) => {
@@ -117,6 +121,7 @@ class StoreManagement extends React.Component<IProps, IState> {
           <Table
             dataSource={this.props.storeManagement.storeList}
             columns={this.columns}
+            loading={this.state.dataLoading}
           />
         </div>
         <AddStoreModel visible={this.state.createStoreModalStatus} onShow={this.createStoreModalStatusSwitch}/>

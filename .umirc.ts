@@ -6,6 +6,10 @@ const routes = [
     component: '../layouts/index',
     routes: [
       {
+        path: '/userIntegralRank',
+        component: '../pages/component/integralStatistics/UserIntegralRankList'
+      },
+      {
         path: '/login',
         component: '../pages/component/login/index'
       },
@@ -44,7 +48,7 @@ const routes = [
               },
               {
                 path: '/orderHistoryList',
-                component: '../pages/component/orderManagement/orderHistoryList'
+                component: '../pages/component/orderManagement/OrderHistoryList'
               },
               {
                 path: '/accountStatisticsDayList',
@@ -122,7 +126,7 @@ const config: IConfig =  {
     contentBase: './target/www/index.html',
     proxy: [{
       context: [
-        '/service', // http://192.168.0.200:8081/service
+        '/app', // http://192.168.0.200:8081/app
         '/api'
       ],
       target: 'http://192.168.0.200:8081',

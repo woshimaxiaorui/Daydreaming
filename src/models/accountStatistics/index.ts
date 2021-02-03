@@ -13,6 +13,8 @@ import { Reducer } from 'redux';
 export interface IAccountStatisticsState {
   accountList: IAccountTable[];
   accountStatisticsDayList: IAccountStatisticsTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 export interface IAccountStatistics {
@@ -36,7 +38,9 @@ const partnerModel: IAccountStatisticsModeType = {
   namespace: 'accountStatistics',
   state: {
     accountList: [],
-    accountStatisticsDayList: []
+    accountStatisticsDayList: [],
+    dataCount: 0,
+    pageCount: 0,
   },
   effects: {
     *getAccountStatisticsListEffect({params},{ call, put }) {
@@ -46,9 +50,10 @@ const partnerModel: IAccountStatisticsModeType = {
       }
       yield put({
         type: 'setAccountListReducer',
-        accountList: getAccountListForTable(res.data)
+        accountList: getAccountListForTable(res.data),
+        dataCount: Number(res.dataCount),
+        pageCount: Number(res.pageCount)
       });
-      // return getAccountListForTable(res.data);
     },
     *getAccountStatisticsDayListEffect({params},{ call, put }) {
       const res: IAccountStatisticsResponse = yield call(accountStatisticsService.queryAccountStatisticsDayListApi,params);
@@ -57,17 +62,18 @@ const partnerModel: IAccountStatisticsModeType = {
       }
       yield put({
         type: 'setAccountStatisticsDayListReducer',
-        accountStatisticsDayList: getAccountStatisticsListForTable(res.data)
+        accountStatisticsDayList: getAccountStatisticsListForTable(res.data),
+        dataCount: Number(res.dataCount),
+        pageCount: Number(res.pageCount)
       });
-      // return res.data;
     }
   },
   reducers: {
-    setAccountListReducer: (state, { accountList }) => {
-      return { ...state, accountList };
+    setAccountListReducer: (state, { accountList, dataCount, pageCount }) => {
+      return { ...state, accountList, dataCount, pageCount };
     },
-    setAccountStatisticsDayListReducer: (state, { accountStatisticsDayList }) => {
-      return { ...state, accountStatisticsDayList };
+    setAccountStatisticsDayListReducer: (state, { accountStatisticsDayList, dataCount, pageCount }) => {
+      return { ...state, accountStatisticsDayList, dataCount, pageCount };
     },
   }
 }

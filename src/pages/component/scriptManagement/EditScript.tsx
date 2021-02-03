@@ -90,6 +90,30 @@ class EditScriptModel extends React.Component<IProps> {
             <Input />
           </Form.Item>
           <Form.Item
+            name="costPrice"
+            label="成本价格"
+            rules={[
+              {
+                required: true,
+                message: '输入成本价格!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="formatPrice"
+            label="开本价格"
+            rules={[
+              {
+                required: true,
+                message: '输入开本价格!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
             name="description"
             label="描述"
             rules={[

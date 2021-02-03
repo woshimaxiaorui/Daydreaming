@@ -2,11 +2,6 @@ import { IResponse } from '@/pages/types/public';
 import { IUserTable } from '@/pages/types/userManagement';
 
 export interface IPlayerTable extends IUserTable {
-  killerIntegral: string;
-  detectiveIntegral: string;
-  peopleIntegral: string;
-  totalIntegral: string;
-  activeIntegral: string;
   // nickname: string;
   // phone: string;
   // sex?: string;
@@ -16,7 +11,9 @@ export interface IPlayerTable extends IUserTable {
 }
 
 export interface IPlayerResponse extends IResponse {
-  data: IPlayerTable[]
+  data: IPlayerTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 export interface IAddPlayerResponse extends IResponse {

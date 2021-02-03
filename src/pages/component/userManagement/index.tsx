@@ -11,6 +11,7 @@ interface IProps extends StateProps, ConnectProps {
 }
 
 interface IState {
+  dataLoading: boolean;
   createUserModalStatus: boolean;
   editUserModalStatus: boolean;
   currentData: IUserTable;
@@ -19,6 +20,7 @@ interface IState {
 
 class UserManagement extends React.Component<IProps, IState> {
   state = {
+    dataLoading: true,
     createUserModalStatus: false,
     editUserModalStatus: false,
     currentData: Object.create(null),
@@ -71,20 +73,23 @@ class UserManagement extends React.Component<IProps, IState> {
     }
   ];
 
-  componentDidMount() {
+  async componentDidMount() {
     const params = {
       storeId: this.props.loginManagement.userInfo.storeId
     }
-    this.props.dispatch({
+    await this.props.dispatch({
       type: 'userManagement/getUserManagementListEffect',
       params
     });
     const userList = _.filter(this.props.userManagement.userList, (user: IUserTable) => {
       return user.role !== '3';
     });
-    this.setState({
+    await this.setState({
       userList
-    })
+    });
+    this.setState({
+      dataLoading: false
+    });
   }
 
   createUserModalStatusSwitch = (createUserModalStatus: boolean) => {
@@ -107,7 +112,11 @@ class UserManagement extends React.Component<IProps, IState> {
           <Button type="primary" onClick={() => this.createUserModalStatusSwitch(true)}>添加用户</Button>
         </div>
         <div className="user-table">
-          <Table dataSource={this.state.userList} columns={this.columns} />
+          <Table
+            dataSource={this.state.userList}
+            columns={this.columns}
+            loading={this.state.dataLoading}
+          />
         </div>
       </div>
     )

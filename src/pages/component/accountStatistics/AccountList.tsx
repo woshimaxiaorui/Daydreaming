@@ -1,28 +1,36 @@
 import React from 'react';
-import { ConnectState, ConnectProps } from '@/models/connect';
 import { connect } from 'react-redux';
+import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
+import './index.scss';
 import { IAccountTable } from '@/pages/types/accountStatistics';
 import AccountSearch from '@/pages/component/accountStatistics/AccountSearch';
-import { Space, Table } from 'antd';
+import { Space, Spin, Table } from 'antd';
 import moment from 'moment';
+import { IPagination } from '@/pages/types/pagination';
+import { getPaginationParams, getRandomuserParams } from '@/utils/func';
 
-interface IProps extends StateProps, ConnectProps{
+interface IProps extends StateProps, ConnectProps {
   accountList: IAccountTable[]
 }
 
 interface IState {
-  dataLoading: boolean;
   initDateRange: object;
+  pagination: IPagination;
+  formValues: any;
 }
 
 class AccountList extends React.Component<IProps, IState> {
   state = {
-    dataLoading: true,
     initDateRange: {
       startDate: moment().startOf('month').format('YYYY-MM-DD'),
       endDate: moment().endOf('month').format('YYYY-MM-DD')
-    }
+    },
+    pagination: {
+      current: 1,
+      pageSize: 10
+    },
+    formValues: Object.create(null)
   }
 
   columns = [
@@ -61,6 +69,7 @@ class AccountList extends React.Component<IProps, IState> {
     {
       title: '账户变更金额',
       key: 'changeMoney',
+      align: 'right',
       render: (record: IAccountTable) => (
         <Space size="middle">
           { this.getAccountChangeMoney(record) }
@@ -70,6 +79,7 @@ class AccountList extends React.Component<IProps, IState> {
     {
       title: '代金卷变更金额',
       key: 'changeMoney',
+      align: 'right',
       render: (record: IAccountTable) => (
         <Space size="middle">
           { this.getVoucherChangeMoney(record) }
@@ -80,6 +90,7 @@ class AccountList extends React.Component<IProps, IState> {
       title: '变更时间',
       dataIndex: 'changeTime',
       key: 'changeTime',
+      align: 'center'
     },
     {
       title: '变更类型',
@@ -115,13 +126,28 @@ class AccountList extends React.Component<IProps, IState> {
   ];
 
   async componentDidMount() {
-    const params = this.state.initDateRange;
+    const params = {
+      ...this.state.initDateRange,
+      storeId: this.props.loginUserInfo.storeId,
+      pagination: this.state.pagination
+    };
+    await this.getListData(params);
+  }
+
+  getListData = async (params: any = {}) => {
+    const requestParams = getRandomuserParams(params);
+    delete requestParams.pagination;
     await this.props.dispatch({
       type: 'accountStatistics/getAccountStatisticsListEffect',
-      params
+      params: requestParams
     });
-    this.setState({
-      dataLoading: false
+    await this.setState(getPaginationParams(params,params.pagination,this.props.accountDataCount));
+  }
+
+  handleTableChange = async (pagination: any, filters: any, sorter: any) => {
+    await this.getListData({
+      ...this.state.formValues,
+      pagination
     });
   }
 
@@ -143,32 +169,36 @@ class AccountList extends React.Component<IProps, IState> {
     return (
       <div className="account-management">
         <div className="account-search">
-          <AccountSearch initDateRange={this.state.initDateRange} />
+          <AccountSearch initDateRange={this.state.initDateRange} pagination={this.state.pagination} getListData={this.getListData.bind(this)} />
         </div>
         <div className="account-table">
-          <Table
-            dataSource={this.props.accountList}
-            columns={this.columns}
-            loading={this.state.dataLoading}
-            summary={pageData => {
-              let summaryAccountMoney = 0;
-              let summaryVoucherMoney = 0;
-              _.forEach(pageData, (value: IAccountTable) => {
-                summaryAccountMoney += Number(this.getAccountChangeMoney(value));
-                summaryVoucherMoney += Number(this.getVoucherChangeMoney(value));
-              })
-              return (
-                <>
-                  <Table.Summary.Row>
-                    <Table.Summary.Cell index={0} colSpan={2}>总计</Table.Summary.Cell>
-                    <Table.Summary.Cell index={1} align="right">{summaryAccountMoney.toFixed(2)}</Table.Summary.Cell>
-                    <Table.Summary.Cell index={2} align="right">{summaryVoucherMoney.toFixed(2)}</Table.Summary.Cell>
-                    <Table.Summary.Cell index={3} colSpan={3}></Table.Summary.Cell>
-                  </Table.Summary.Row>
-                </>
-              );
-            }}
-          />
+          <Spin tip="Loading..." spinning={this.props.loading}>
+            <Table
+              dataSource={this.props.accountList}
+              // @ts-ignore
+              columns={this.columns}
+              pagination={this.state.pagination}
+              onChange={this.handleTableChange}
+              summary={pageData => {
+                let summaryAccountMoney = 0;
+                let summaryVoucherMoney = 0;
+                _.forEach(pageData, (value: IAccountTable) => {
+                  summaryAccountMoney += Number(this.getAccountChangeMoney(value));
+                  summaryVoucherMoney += Number(this.getVoucherChangeMoney(value));
+                })
+                return (
+                  <>
+                    <Table.Summary.Row>
+                      <Table.Summary.Cell index={0} colSpan={2}>总计</Table.Summary.Cell>
+                      <Table.Summary.Cell index={1} align="right">{summaryAccountMoney.toFixed(2)}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={2} align="right">{summaryVoucherMoney.toFixed(2)}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={3} colSpan={3}></Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  </>
+                );
+              }}
+            />
+          </Spin>
         </div>
       </div>
     )
@@ -176,7 +206,10 @@ class AccountList extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = (state: ConnectState) => ({
-  accountList: state.accountStatistics.accountList
+  loginUserInfo: state.loginManagement.userInfo,
+  accountList: state.accountStatistics.accountList,
+  accountDataCount: state.accountStatistics.dataCount,
+  loading: state.loading.global
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 

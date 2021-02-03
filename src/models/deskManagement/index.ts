@@ -28,13 +28,17 @@ export interface IDeskManagementModeType {
 export interface IDeskManagementState {
   deskList: IDeskTable[];
   deskOrderList: IDeskTable[];
+  dataCount: number;
+  pageCount: number;
 }
 
 const partnerModel: IDeskManagementModeType = {
   namespace: 'deskManagement',
   state: {
     deskList: [],
-    deskOrderList: []
+    deskOrderList: [],
+    dataCount: 0,
+    pageCount: 0,
   },
   effects: {
     *getDeskManagementListEffect({ params },{ put, call }) {
@@ -44,7 +48,9 @@ const partnerModel: IDeskManagementModeType = {
       }
       yield put({
         type: 'setDeskListReducer',
-        deskList: getDeskListForTable(res.data)
+        deskList: getDeskListForTable(res.data),
+        dataCount: Number(res.dataCount),
+        pageCount: Number(res.pageCount)
       });
     },
     *addDeskManagementEffect({ params }, { put, call }) {
@@ -76,7 +82,6 @@ const partnerModel: IDeskManagementModeType = {
       if(_.isEmpty(res)){
         return;
       }
-      console.log(res);
       yield put({
         type: 'setDeskOrderListReducer',
         deskOrderList: getDeskListForTable(res.data)
@@ -84,8 +89,8 @@ const partnerModel: IDeskManagementModeType = {
     },
   },
   reducers: {
-    setDeskListReducer: (state, { deskList }) => {
-      return { ...state, deskList };
+    setDeskListReducer: (state, { deskList, dataCount, pageCount }) => {
+      return { ...state, deskList, dataCount, pageCount };
     },
     setDeskOrderListReducer: (state, { deskOrderList }) => {
       return { ...state, deskOrderList };

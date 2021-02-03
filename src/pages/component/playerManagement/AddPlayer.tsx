@@ -1,10 +1,11 @@
 import React from 'react';
-import { Modal, Button, Form, Select, Input } from 'antd';
-import { IAddStoreExists } from '@/pages/types/storeManagement';
+import { Modal, Button, Form, Select, Input, DatePicker } from 'antd';
 import { Dispatch } from 'dva';
 import { connect } from 'react-redux';
 import { IAddPlayerExists } from '@/pages/types/playerManagement';
 import { FormInstance } from 'antd/es/form';
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
 
 interface IProps {
   visible: boolean;
@@ -12,6 +13,7 @@ interface IProps {
   onShow(visible: boolean): void;
 }
 
+const dateFormat = 'YYYY-MM-DD';
 const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
@@ -24,7 +26,8 @@ class AddPlayerModel extends React.Component<IProps> {
   onSubmit = async (values: any) => {
     const params = {
       ...values,
-      storeId: '1'
+      storeId: '1',
+      birthday:values.birthday.format('YYYY-MM-DD')
     };
     const submitRes: IAddPlayerExists = await this.props.dispatch({
       type: 'playerManagement/addPlayerManagementEffect',
@@ -88,6 +91,12 @@ class AddPlayerModel extends React.Component<IProps> {
               <Select.Option value="1">男</Select.Option>
               <Select.Option value="0">女</Select.Option>
             </Select>
+          </Form.Item>
+          <Form.Item
+            name="birthday"
+            label="生日"
+          >
+            <DatePicker locale={locale} format={dateFormat} />
           </Form.Item>
           <Form.Item
             name="remark"

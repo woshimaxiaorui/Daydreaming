@@ -6,6 +6,12 @@
       display: flex;
       justify-content: space-between;
     }
+    .order-table {
+      padding: 0 10px 10px 10px;
+      .ant-table-summary {
+        color: red;
+      }
+    }
     .order-content {
       display: flex;
       justify-content: flex-start;

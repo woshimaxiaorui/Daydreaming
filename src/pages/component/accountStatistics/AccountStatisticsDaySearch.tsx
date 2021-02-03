@@ -1,17 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'dva';
+import { ConnectState, ConnectProps } from '@/models/connect';
 import _ from 'lodash';
 import { Form, Button, DatePicker } from 'antd';
 import moment from 'moment';
-import 'moment/locale/zh-cn';
-import locale from 'antd/es/date-picker/locale/zh_CN';
+import { IPagination } from '@/pages/types/pagination';
 
 const { RangePicker } = DatePicker;
 
-interface IProps {
-  dispatch: Dispatch,
-  initDateRange: any
+interface IProps extends StateProps, ConnectProps {
+  initDateRange: any;
+  pagination: IPagination;
+  getListData: any;
 }
 
 class AccountStatisticsDaySearch extends React.Component<IProps> {
@@ -20,14 +20,18 @@ class AccountStatisticsDaySearch extends React.Component<IProps> {
     if(_.isUndefined(values)){
       return;
     }
+
+    const pagination = this.props.pagination;
+    pagination.current = 1;
     const params = {
+      ...values,
+      pagination,
+      storeId: this.props.loginUserInfo.storeId,
       startDate: values.dateRange[0].format('YYYY-MM-DD'),
       endDate: values.dateRange[1].format('YYYY-MM-DD'),
     };
-    this.props.dispatch({
-      type: 'accountStatistics/getAccountStatisticsDayListEffect',
-      params
-    });
+
+    this.props.getListData(params);
   };
 
   render() {
@@ -44,7 +48,6 @@ class AccountStatisticsDaySearch extends React.Component<IProps> {
           label="时间范围"
         >
           <RangePicker
-            locale={locale}
             format={dateFormat}
           />
         </Form.Item>
@@ -61,4 +64,9 @@ class AccountStatisticsDaySearch extends React.Component<IProps> {
   }
 }
 
-export default connect()(AccountStatisticsDaySearch);
+const mapStateToProps = (state: ConnectState) => ({
+  loginUserInfo: state.loginManagement.userInfo
+});
+type StateProps = ReturnType<typeof mapStateToProps>;
+
+export default connect(mapStateToProps)(AccountStatisticsDaySearch);

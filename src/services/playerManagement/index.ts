@@ -3,25 +3,25 @@ import { IAddPlayerResponse, ISearchPlayer, IPlayerResponse } from '@/pages/type
 
 
 export async function queryPlayerManagementListApi(params: ISearchPlayer): Promise<IPlayerResponse>{
-  return request.get('/service/user/get-player-list', {
+  return request.get('/app/user/get-player-list', {
     params
   });
 }
 
 export async function addPlayerManagementApi(params: IAddPlayerResponse) {
-  return request.post('/service/user/add-player', {
+  return request.post('/app/user/add-player', {
     data: params
   });
 }
 
 export async function editPlayerManagementApi(params: IAddPlayerResponse) {
-  return request.post('/service/user/edit-player', {
+  return request.post('/app/user/edit-player', {
     data: params
   });
 }
 
 export async function accountRechargeApi(params: IPlayerResponse) {
-  return request.post('/service/user/account-recharge', {
+  return request.post('/app/user/account-recharge', {
     data: params
   });
 }

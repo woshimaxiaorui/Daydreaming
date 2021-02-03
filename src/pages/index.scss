@@ -1,12 +1,16 @@
 :global {
+  .ant-col-18 {
+    max-width: 100%;
+  }
+  .editorClassName {
+    border: 1px solid #F3F3F3;
+  }
   .main {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    height: auto;
+    min-height: 100%;
     font-family: initial;
-    .ant-layout{
-      height:
-        100%;
-    }
     .site-layout-header {
       height: 60px;
       padding: 0;
@@ -66,11 +70,10 @@
       }
     }
     .site-layout-content {
-      min-height: 480px;
       background: #fff;
-      margin: 25px 16px;
+      margin: 25px 15px;
       padding: 24px;
-      overflow: hidden;
+      //overflow: hidden;
     }
   }
 }

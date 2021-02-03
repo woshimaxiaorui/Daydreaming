@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Form, InputNumber, Input, message } from 'antd';
+import { Modal, Button, Form, InputNumber, Input, message, Radio } from 'antd';
 import { IPlayerTable } from '@/pages/types/playerManagement';
 import _ from 'lodash';
 import { FormInstance } from 'antd/es/form';
@@ -26,7 +26,7 @@ class AccountRechargeModel extends React.Component<IProps> {
     if(!_.isNumber(values.rechargeAmount)){
       return;
     }
-    const params = {...values, userId: values.id};
+    const params = { ...values, userId: values.id };
     const submitRes = await this.props.dispatch({
       type: 'playerManagement/accountRechargeEffect',
       params
@@ -91,6 +91,22 @@ class AccountRechargeModel extends React.Component<IProps> {
             ]}
           >
             <InputNumber min={0} />
+          </Form.Item>
+          <Form.Item
+            name="paymentMethodId"
+            label="充值方式"
+            rules={[
+              {
+                required: true,
+                message: '请选择充值方式!',
+              },
+            ]}
+          >
+            <Radio.Group name="paymentMethodId">
+              <Radio value={1}>微信</Radio>
+              <Radio value={2}>支付宝</Radio>
+              <Radio value={3}>现金</Radio>
+            </Radio.Group>
           </Form.Item>
           <div className="add-player-submit-button-area">
             <Button
